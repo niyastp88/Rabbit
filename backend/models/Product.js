@@ -35,13 +35,28 @@ const productSchema = new mongoose.Schema(
       type: String,
     },
     sizes: {
-      type: [String],
-      required: true,
-    },
+  type: [String],
+  required: true,
+  enum: {
+    values: ["XS", "S", "M", "L"],
+    message: "Sizes must be XS, S, M or L only",
+  },
+},
+
     colors: {
-      type: [String],
-      required: true,
+  type: [String],
+  required: true,
+  validate: {
+    validator: function (colors) {
+      return colors.every(
+        (color) => /^[A-Z][a-z]+$/.test(color)
+      );
     },
+    message:
+      "Colors must start with capital letter (Eg: Red, Blue)",
+  },
+},
+
     collections: {
       type: String,
       required: true,

@@ -16,6 +16,7 @@ const ProductManagement = () => {
   }, [dispatch]);
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete the product?")) {
+      console.log(id)
       dispatch(deleteProduct(id));
     }
   };

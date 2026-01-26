@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { addProduct } from "../../redux/slices/productsSlice";
+import { toast } from "sonner";
+
 
 const AddProductPage = () => {
   const dispatch = useDispatch();
@@ -40,33 +42,36 @@ const AddProductPage = () => {
     }));
   };
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("image", file);
+  const handleImageUpload = async (e, index) => {
+  const file = e.target.files[0];
+  if (!file) return;
 
-    try {
-      setUploading(true);
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+  const formData = new FormData();
+  formData.append("image", file);
 
-      setProductData((prev) => ({
-        ...prev,
-        images: [...prev.images, { url: data.imageUrl, altText: "" }],
-      }));
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setUploading(false);
-    }
-  };
+  try {
+    setUploading(true);
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+
+    setProductData((prev) => {
+      const newImages = [...prev.images];
+      newImages[index] = { url: data.imageUrl, altText: "" };
+      return { ...prev, images: newImages };
+    });
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setUploading(false);
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const payload = {
       ...productData,
       price: Number(productData.price),
@@ -76,8 +81,26 @@ const AddProductPage = () => {
         : undefined,
     };
 
-    await dispatch(addProduct(payload)).unwrap();
+    try {
+      await dispatch(addProduct(payload)).unwrap();
     navigate("/admin/products");
+    toast.success("Product added successfully!", {
+      duration: 1200,
+    });
+      
+    } catch (err) {
+      toast.error(
+      err?.message || "Failed to add product",
+      {
+        duration: 1500,
+      }
+    );
+      
+    }
+
+    
+
+    
   };
 
   return (
@@ -116,7 +139,7 @@ const AddProductPage = () => {
           name="price"
           placeholder="Price"
           value={productData.price}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
 
         {/* Stock */}
@@ -126,7 +149,7 @@ const AddProductPage = () => {
           name="countInStock"
           placeholder="Stock"
           value={productData.countInStock}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
         <div className="mb-4">
           <label className="block font-semibold mb-2">Category</label>
@@ -182,7 +205,7 @@ const AddProductPage = () => {
           name="sku"
           placeholder="SKU"
           value={productData.sku}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
 
         {/* Sizes */}
@@ -195,7 +218,7 @@ const AddProductPage = () => {
               ...productData,
               sizes: e.target.value.split(",").map((s) => s.trim()),
             })
-          }
+          } required
         />
 
         {/* Colors */}
@@ -208,23 +231,48 @@ const AddProductPage = () => {
               ...productData,
               colors: e.target.value.split(",").map((c) => c.trim()),
             })
-          }
+          } required
         />
 
         {/* Image Upload */}
-        <input type="file" onChange={handleImageUpload} />
-        {uploading && <p>Uploading...</p>}
+        {/* Image Upload 1 */}
+<div className="mb-4">
+  <label className="block font-semibold mb-2">
+    Upload Image 1
+  </label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => handleImageUpload(e, 0)}
+    required
+  />
+</div>
 
-        <div className="flex gap-3 mt-4">
-          {productData.images.map((img, i) => (
-            <img
-              key={i}
-              src={img.url}
-              alt="preview"
-              className="w-20 h-20 object-cover rounded"
-            />
-          ))}
-        </div>
+{/* Image Upload 2 */}
+<div className="mb-4">
+  <label className="block font-semibold mb-2">
+    Upload Image 2
+  </label>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => handleImageUpload(e, 1)}
+    required
+  />
+</div>
+<div className="flex gap-4 mt-4">
+  {productData.images.map((img, i) =>
+    img ? (
+      <img
+        key={i}
+        src={img.url}
+        alt={`preview-${i}`}
+        className="w-24 h-24 object-cover rounded"
+      />
+    ) : null
+  )}
+</div>
+
 
         <button
           type="submit"
@@ -233,6 +281,12 @@ const AddProductPage = () => {
           Add Product
         </button>
       </form>
+      {error && (
+  <p className="mb-4 text-red-600 bg-red-100 p-2 rounded">
+    {error}
+  </p>
+)}
+
     </div>
   );
 };

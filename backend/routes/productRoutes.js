@@ -10,56 +10,34 @@ const router = express.Router();
 
 router.post("/", protect, admin, async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      discountPrice,
-      countInStock,
-      category,
-      brand,
-      sizes,
-      colors,
-      collections,
-      material,
-      gender,
-      images,
-      isFeatured,
-      isPublished,
-      tags,
-      dimensions,
-      weight,
-      sku,
-    } = req.body;
     const product = new Product({
-      name,
-      description,
-      price,
-      discountPrice,
-      countInStock,
-      category,
-      brand,
-      sizes,
-      colors,
-      collections,
-      material,
-      gender,
-      images,
-      isFeatured,
-      isPublished,
-      tags,
-      dimensions,
-      weight,
-      sku,
-      user: req.user._id, // Referance to the admin user who created it
+      ...req.body,
+      user: req.user._id,
     });
+
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Server error");
+
+    // ✅ Mongoose validation error
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        message: Object.values(error.errors)[0].message,
+      });
+    }
+
+    // ✅ Duplicate SKU
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: "SKU already exists",
+      });
+    }
+
+    res.status(500).json({ message: "Server error" });
   }
 });
+
 
 // @route PUT /api/products/:id
 // @desc Update an existing product ID
