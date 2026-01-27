@@ -10,6 +10,9 @@ import adminOrderReducer from "./slices/adminOrderSlice";
 import categoryReducer from "./slices/categorySlice";
 import brandReducer from "./slices/brandSlice";
 import materialReducer from "./slices/materialSlice";
+import wishlistReducer from "./slices/wishlistSlice";
+
+
 
 const store = configureStore({
   reducer: {
@@ -24,6 +27,7 @@ const store = configureStore({
     categories: categoryReducer,
     brands: brandReducer,
     materials: materialReducer,
+    wishlist: wishlistReducer,
   },
 });
 

@@ -15,6 +15,7 @@ const adminOrderRoutes = require("./routes/adminOrderRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const materialRoutes = require("./routes/materialRoutes");
 const brandRoutes = require("./routes/brandRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
 
 const app = express();
 app.use(express.json());
@@ -41,6 +42,7 @@ app.use("/api", subscriberRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/materials", materialRoutes);
 app.use("/api/brands", brandRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 // Admin
 app.use("/api/admin/users", adminRoutes);
