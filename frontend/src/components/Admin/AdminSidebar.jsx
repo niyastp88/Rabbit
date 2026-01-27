@@ -41,7 +41,7 @@ const AdminSidebar = () => {
           }
         >
           <FaUser />
-          <span>Users</span>
+          <span>User Management</span>
         </NavLink>
         <NavLink
           to="/admin/products"
@@ -52,7 +52,7 @@ const AdminSidebar = () => {
           }
         >
           <FaBoxOpen />
-          <span>Products</span>
+          <span>Product Management</span>
         </NavLink>
         <NavLink
           to="/admin/orders"
@@ -63,7 +63,7 @@ const AdminSidebar = () => {
           }
         >
           <FaClipboardList />
-          <span>Orders</span>
+          <span>Order Management</span>
         </NavLink>
         <NavLink
           to="/"
@@ -75,6 +75,39 @@ const AdminSidebar = () => {
         >
           <FaStore />
           <span>Shop</span>
+        </NavLink>
+        <NavLink
+          to="/admin/categories"
+          className={({ isActive }) =>
+            isActive
+              ? "bg-gray-700 text-white py-3 rounded flex items-center space-x-2"
+              : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"
+          }
+        >
+          <FaStore />
+          <span>Category Management</span>
+        </NavLink>
+        <NavLink
+          to="/admin/brands"
+          className={({ isActive }) =>
+            isActive
+              ? "bg-gray-700 text-white py-3 rounded flex items-center space-x-2"
+              : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"
+          }
+        >
+          <FaStore />
+          <span>Brand Management</span>
+        </NavLink>
+        <NavLink
+          to="/admin/materials"
+          className={({ isActive }) =>
+            isActive
+              ? "bg-gray-700 text-white py-3 rounded flex items-center space-x-2"
+              : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"
+          }
+        >
+          <FaStore />
+          <span>Material Management</span>
         </NavLink>
         <div className="mt-6">
           <button

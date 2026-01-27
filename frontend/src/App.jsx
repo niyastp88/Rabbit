@@ -19,10 +19,18 @@ import ProductManagement from "./components/Admin/ProductManagement";
 import EditProductPage from "./components/Admin/EditProductPage";
 import OrderManagement from "./components/Admin/OrderManagement";
 import ProtectedRoute from "./components/Common/ProtectedRoute";
+import AddProductPage from "./components/Admin/AddProductPage";
+import CategoryManagement from "./components/Admin/categoryManagement";
+
+
+
+
 
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import AddProductPage from "./components/Admin/AddProductPage";
+import BrandManagement from "./components/Admin/brandManagemnt";
+import MaterialManagement from "./components/Admin/materialManagement";
+
 
 const App = () => {
   return (
@@ -62,6 +70,12 @@ const App = () => {
             <Route path="products/:id/edit" element={<EditProductPage />} />
             <Route path="/admin/products/add" element={<AddProductPage />} />
             <Route path="orders" element={<OrderManagement />} />
+            <Route path="/admin/categories" element={<CategoryManagement />} />
+            <Route path="/admin/brands" element={<BrandManagement />} />
+            <Route path="/admin/materials" element={<MaterialManagement />} />
+            
+            
+            
           </Route>
         </Routes>
       </BrowserRouter>

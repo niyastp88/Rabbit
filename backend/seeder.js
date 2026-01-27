@@ -28,14 +28,14 @@ const seedData = async () => {
       role: "admin",
     });
 
-    // Assign the default user ID to each product
-    const userID = createdUser._id;
-    const sampleProducts = products.map((product) => {
-      return { ...product, user: userID };
-    });
+    // // Assign the default user ID to each product
+    // const userID = createdUser._id;
+    // const sampleProducts = products.map((product) => {
+    //   return { ...product, user: userID };
+    // });
 
-    // Insert the products into the database
-    await Product.insertMany(sampleProducts);
+    // // Insert the products into the database
+    // await Product.insertMany(sampleProducts);
 
     console.log("Product data seeded successfully!");
     process.exit();

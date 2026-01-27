@@ -15,18 +15,12 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    discountPrice: {
-      type: Number,
-    },
+    
     countInStock: {
       type: Number,
-      default: 0,
+      required:true,
     },
-    sku: {
-      type: String,
-      unique: true,
-      required: true,
-    },
+    
     category: {
       type: String,
       required: true,
@@ -38,7 +32,7 @@ const productSchema = new mongoose.Schema(
   type: [String],
   required: true,
   enum: {
-    values: ["XS", "S", "M", "L"],
+    values: ["XS", "S", "M", "L", "XL", "XXL"],
     message: "Sizes must be XS, S, M or L only",
   },
 },
@@ -57,10 +51,7 @@ const productSchema = new mongoose.Schema(
   },
 },
 
-    collections: {
-      type: String,
-      required: true,
-    },
+    
     material: {
       type: String,
     },
@@ -81,14 +72,7 @@ const productSchema = new mongoose.Schema(
         },
       },
     ],
-    isFeatured: {
-      type: Boolean,
-      default: false,
-    },
-    isPublished: {
-      type: Boolean,
-      default: false,
-    },
+   
     rating: {
       type: Number,
       default: 0,
@@ -97,27 +81,13 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    tags: [String],
+    
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    metaTitle: {
-      type: String,
-    },
-    metaDescription: {
-      type: String,
-    },
-    metaKeywords: {
-      type: String,
-    },
-    dimensions: {
-      length: Number,
-      width: Number,
-      height: Number,
-    },
-    weight: Number,
+    
   },
   {
     timestamps: true,

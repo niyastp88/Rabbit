@@ -41,7 +41,8 @@ const ProductManagement = () => {
             <tr>
               <th className="py-3 px-4">Name</th>
               <th className="py-3 px-4">Price</th>
-              <th className="py-3 px-4">SKU</th>
+              <th className="py-3 px-4">Stock</th>
+              
               <th className="py-3 px-4">Actions</th>
             </tr>
           </thead>
@@ -56,7 +57,8 @@ const ProductManagement = () => {
                     {product.name}
                   </td>
                   <td className="p-4">{product.price}</td>
-                  <td className="p-4">{product.sku}</td>
+                  <td className="p-4">{product.countInStock}</td>
+                  
                   <td className="p-4">
                     <Link
                       to={`/admin/products/${product._id}/edit`}

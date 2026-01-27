@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { fetchCategories } from "../../redux/slices/categorySlice";
+import { fetchBrands } from "../../redux/slices/brandSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMaterials } from "../../redux/slices/materialSlice";
 
 const FilterSidebar = () => {
+   const dispatch = useDispatch();
+    const { categories, loading } = useSelector((state) => state.categories);
+    const { brands} = useSelector((state) => state.brands);
+    const { materials} = useSelector((state) => state.materials);
+  useEffect(() => {
+      dispatch(fetchCategories());
+      dispatch(fetchBrands())
+      dispatch(fetchMaterials())
+    }, [dispatch]);
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const [filters, setFilters] = useState({
@@ -15,7 +28,8 @@ const FilterSidebar = () => {
     maxPrice: 100,
   });
   const [priceRange, setPriceRange] = useState([0, 100]);
-  const categories = ["Top Wear", "Bottom Wear"];
+  
+  
   const colors = [
     "Red",
     "Blue",
@@ -29,31 +43,15 @@ const FilterSidebar = () => {
     "Navy",
   ];
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-  const materails = [
-    "Cotton",
-    "Wool",
-    "Denim",
-    "Polyseter",
-    "Silk",
-    "Linen",
-    "Vicose",
-    "Fleece",
-  ];
-  const brands = [
-    "Urban Threads",
-    "Modern Fit",
-    "Street Style",
-    "Beach Breeze",
-    "Fashionista",
-    "ChicStyle",
-  ];
+ 
+  
   const genders = ["Men", "Women"];
   useEffect(() => {
     const params = Object.fromEntries([...searchParams]);
     setFilters({
       category: params.category || "",
       gender: params.gender || "",
-      color: params.color || "",
+      color: params.color ? params.color.split(",") : [],
       size: params.size ? params.size.split(",") : [],
       material: params.material ? params.material.split(",") : [],
       brand: params.brand ? params.brand.split(",") : [],
@@ -106,16 +104,16 @@ const FilterSidebar = () => {
       <div className="mb-6">
         <label className="block text-gray-600 font-medium mb-2">Category</label>
         {categories.map((category) => (
-          <div key={category} className="flex items-center mb-1">
+          <div key={category._id} className="flex items-center mb-1">
             <input
               type="radio"
               name="category"
-              value={category}
+              value={category.name}
               onChange={handleFilterChange}
-              checked={filters.category === category}
+              checked={filters.category === category.name}
               className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
             />
-            <span className="text-gray-700">{category}</span>
+            <span className="text-gray-700">{category.name}</span>
           </div>
         ))}
       </div>
@@ -139,21 +137,19 @@ const FilterSidebar = () => {
       {/* Color Filter */}
       <div className="mb-6">
         <label className="block text-gray-600 font-medium mb-2">Color</label>
-        <div className="flex flex-wrap gap-2">
-          {colors.map((color) => (
-            <button
-              key={color}
-              onClick={() => {
-                const newFilters = { ...filters, color };
-                setFilters(newFilters);
-                updateURLParams(newFilters);
-              }}
-              className={`w-8 h-8 rounded-full border 
-    ${filters.color === color ? "ring-2 ring-blue-500" : ""}`}
-              style={{ backgroundColor: color }}
-            ></button>
-          ))}
-        </div>
+        {colors.map((color) => (
+          <div key={color} className="flex items-center mb-1">
+            <input
+              type="checkbox"
+              name="color"
+              value={color}
+              onChange={handleFilterChange}
+              checked={filters.color.includes(color)}
+              className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
+            />
+            <span className="text-gray-700">{color}</span>
+          </div>
+        ))}
       </div>
       {/* Size Filter */}
       <div className="mb-6">
@@ -175,17 +171,17 @@ const FilterSidebar = () => {
       {/* Material Filter */}
       <div className="mb-6">
         <label className="block text-gray-600 font-medium mb-2">Material</label>
-        {materails.map((material) => (
-          <div key={material} className="flex items-center mb-1">
+        {materials.map((material) => (
+          <div key={material._id} className="flex items-center mb-1">
             <input
               type="checkbox"
               name="material"
-              value={material}
+              value={material.name}
               onChange={handleFilterChange}
-              checked={filters.material.includes(material)}
+              checked={filters.material.includes(material.name)}
               className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
             />
-            <span className="text-gray-700">{material}</span>
+            <span className="text-gray-700">{material.name}</span>
           </div>
         ))}
       </div>
@@ -193,16 +189,16 @@ const FilterSidebar = () => {
       <div className="mb-6">
         <label className="block text-gray-600 font-medium mb-2">Brand</label>
         {brands.map((brand) => (
-          <div key={brand} className="flex items-center mb-1">
+          <div key={brand._id} className="flex items-center mb-1">
             <input
               type="checkbox"
               name="brand"
-              value={brand}
+              value={brand.name}
               onChange={handleFilterChange}
-              checked={filters.brand.includes(brand)}
+              checked={filters.brand.includes(brand.name)}
               className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
             />
-            <span className="text-gray-700">{brand}</span>
+            <span className="text-gray-700">{brand.name}</span>
           </div>
         ))}
       </div>

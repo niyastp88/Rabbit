@@ -1,15 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { addProduct } from "../../redux/slices/productsSlice";
 import { toast } from "sonner";
+import { fetchCategories } from "../../redux/slices/categorySlice";
+
 
 
 const AddProductPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.products);
+  const { categories } = useSelector((state) => state.categories);
+
+  useEffect(() => {
+  dispatch(fetchCategories());
+}, [dispatch])
 
   const [uploading, setUploading] = useState(false);
 
@@ -152,34 +159,57 @@ const AddProductPage = () => {
           onChange={handleChange} required
         />
         <div className="mb-4">
-          <label className="block font-semibold mb-2">Category</label>
-          <select
-            name="category"
-            value={productData.category}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select Category</option>
-            <option value="Top Wear">Top Wear</option>
-            <option value="Bottom Wear">Bottom Wear</option>
-          </select>
-        </div>
+  <label className="block font-semibold mb-2">
+    Category
+  </label>
+  <select
+    name="category"
+    value={productData.category}
+    onChange={handleChange}
+    required
+    className="w-full p-2 border rounded"
+  >
+    <option value="">Select Category</option>
+
+    {categories.map((cat) => (
+      <option key={cat._id} value={cat.name}>
+        {cat.name}
+      </option>
+    ))}
+  </select>
+</div>
+
 
         <div className="mb-4">
-          <label className="block font-semibold mb-2">Collection</label>
+          <label className="block font-semibold mb-2">Brand</label>
           <select
-            name="collections"
-            value={productData.collections}
+            name="brand"
+            value={productData.brand}
             onChange={handleChange}
             required
             className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">Select Collection</option>
+            <option value="">Select Brand</option>
             <option value="Basics">Basics</option>
-            <option value="Casual Collection">Casual Collection</option>
-            <option value="Urban Collection">Urban Collection</option>
-            <option value="Lounge Collection">Lounge Collection</option>
+            <option value="Allen Solly">Allen Solly</option>
+            <option value="Indigo Nation">Indigo Nation</option>
+            <option value="LP">LP</option>
+            
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block font-semibold mb-2">Material</label>
+          <select
+            name="material"
+            value={productData.material}
+            onChange={handleChange}
+            required
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Material</option>
+            <option value="Cotton">Cotton</option>
+            <option value="Cotton Blend">Cotton Blend</option>
+            
             
           </select>
         </div>
@@ -199,14 +229,7 @@ const AddProductPage = () => {
           </select>
         </div>
 
-        {/* SKU */}
-        <input
-          className="w-full p-2 border mb-4"
-          name="sku"
-          placeholder="SKU"
-          value={productData.sku}
-          onChange={handleChange} required
-        />
+        
 
         {/* Sizes */}
         <input
