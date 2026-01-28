@@ -23,17 +23,11 @@ import AddProductPage from "./components/Admin/AddProductPage";
 import CategoryManagement from "./components/Admin/categoryManagement";
 import PaymentFailedPage from "./pages/PaymentFailedPage";
 
-
-
-
-
-
-
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import BrandManagement from "./components/Admin/brandManagemnt";
 import MaterialManagement from "./components/Admin/materialManagement";
-
+import HomeContentManagement from "./components/Admin/HomeContentManagment";
 
 const App = () => {
   return (
@@ -55,7 +49,6 @@ const App = () => {
             <Route
               path="order-confirmation"
               element={<OrderConfirmationPage />}
-              
             />
             <Route path="/payment-failed" element={<PaymentFailedPage />} />
             <Route path="order/:id" element={<OrderDetailsPage />} />
@@ -78,10 +71,10 @@ const App = () => {
             <Route path="/admin/categories" element={<CategoryManagement />} />
             <Route path="/admin/brands" element={<BrandManagement />} />
             <Route path="/admin/materials" element={<MaterialManagement />} />
-            
-            
-            
-            
+            <Route
+              path="/admin/home-content"
+              element={<HomeContentManagement />}
+            />
           </Route>
         </Routes>
       </BrowserRouter>

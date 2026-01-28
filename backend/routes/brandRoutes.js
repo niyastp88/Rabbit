@@ -12,7 +12,6 @@ const router = express.Router();
 router.post("/", protect, admin, async (req, res) => {
   try {
     const { name } = req.body;
-    console.log("brand post is working")
 
     if (!name) {
       return res.status(400).json({ message: "Brand name is required" });
@@ -45,7 +44,6 @@ router.post("/", protect, admin, async (req, res) => {
 
 router.get("/", async (req, res) => {
   try {
-    console.log("brand get is working")
     const brands = await Brand.find().sort({ name: 1 });
     res.json(brands);
   } catch (error) {

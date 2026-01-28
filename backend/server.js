@@ -17,6 +17,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const materialRoutes = require("./routes/materialRoutes");
 const brandRoutes = require("./routes/brandRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
+const homeContentRoutes=require("./routes/homeContentRoutes")
 
 const app = express();
 app.use(express.json());
@@ -44,6 +45,8 @@ app.use("/api/categories", categoryRoutes);
 app.use("/api/materials", materialRoutes);
 app.use("/api/brands", brandRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/home-content", homeContentRoutes);
+
 
 // Admin
 app.use("/api/admin/users", adminRoutes);

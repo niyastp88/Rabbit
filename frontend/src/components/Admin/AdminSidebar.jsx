@@ -109,6 +109,19 @@ const AdminSidebar = () => {
           <FaStore />
           <span>Material Management</span>
         </NavLink>
+        <NavLink
+          to="/admin/home-content"
+          className={({ isActive }) =>
+            isActive
+              ? "bg-gray-700 text-white py-3 rounded flex items-center space-x-2"
+              : "text-gray-300 hover:bg-gray-700 hover:text-white py-3 px-4 rounded flex items-center space-x-2"
+          }
+        >
+          <FaStore />
+          <span>Banner Management</span>
+        </NavLink>
+        
+
         <div className="mt-6">
           <button
             onClick={handleLogout}

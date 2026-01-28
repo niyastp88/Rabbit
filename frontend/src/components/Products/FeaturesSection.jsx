@@ -12,10 +12,10 @@ const FeaturesSection = () => {
             <HiShoppingBag className="text-xl" />
           </div>
           <h4 className="tracking-tighter mb-2 ">
-            FREE INTERNATIONAL SHIPPING
+            FREE  SHIPPING
           </h4>
           <p className="text-gray-600 text-sm tracking-tighter">
-            On all orders over $100.00
+            On All Orders 
           </p>
         </div>
         {/* Faetured 2 */}
@@ -23,7 +23,7 @@ const FeaturesSection = () => {
           <div className="p-4 rounded-full mb-4">
             <HiArrowPathRoundedSquare className="text-xl" />
           </div>
-          <h4 className="tracking-tighter mb-2 ">45 DAYS RETURN</h4>
+          <h4 className="tracking-tighter mb-2 ">7 DAYS RETURN</h4>
           <p className="text-gray-600 text-sm tracking-tighter">
             Money back guarantee
           </p>

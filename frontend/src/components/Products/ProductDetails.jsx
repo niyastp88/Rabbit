@@ -10,7 +10,7 @@ import {
 } from "../../redux/slices/productsSlice";
 import { addToCart } from "../../redux/slices/cartSlice";
 
-const ProductDetails = ({ productId }) => {
+const ProductDetails = ({ productId,home }) => {
   const { id } = useParams();
   const disPatch = useDispatch();
   const { selectedProduct, loading, error, similarProducts } = useSelector(
@@ -215,16 +215,19 @@ const ProductDetails = ({ productId }) => {
               </div>
             </div>
           </div>
-          <div className="mt-20">
-            <h2 className="text-2xl text-center font-medium mb-4">
-              You May Also Like
-            </h2>
-            <ProductGrid
-              products={similarProducts}
-              loading={loading}
-              error={error}
-            />
-          </div>
+          {!home && (
+  <div className="mt-20">
+    <h2 className="text-2xl text-center font-medium mb-4">
+      You May Also Like
+    </h2>
+    <ProductGrid
+      products={similarProducts}
+      loading={loading}
+      error={error}
+    />
+  </div>
+)}
+
         </div>
       )}
     </div>
