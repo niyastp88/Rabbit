@@ -5,9 +5,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchOrderDetails } from "../redux/slices/orderSlice";
 
 const OrderDetailsPage = () => {
+  const formatDate = (date) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
+  const statusStyles = {
+  Processing: "bg-yellow-100 text-yellow-700",
+  Shipped: "bg-blue-100 text-blue-700",
+  Delivered: "bg-green-100 text-green-700",
+  Cancelled: "bg-red-100 text-red-700",
+};
+
   const { id } = useParams();
   const dispatch = useDispatch();
   const { orderDetails, loading, error } = useSelector((state) => state.orders);
+  console.log(orderDetails)
 
   useEffect(() => {
     dispatch(fetchOrderDetails(id));
@@ -30,8 +46,10 @@ const OrderDetailsPage = () => {
                 Order ID:#{orderDetails._id}
               </h3>
               <p className="text-gray-600">
-                {new Date(orderDetails.createdAt).toLocaleDateString()}
-              </p>
+  {formatDate(orderDetails.createdAt)}
+</p>
+
+
             </div>
             <div className="flex flex-col items-start sm:items-end mt-4 sm:mt-0">
               <span
@@ -41,24 +59,24 @@ const OrderDetailsPage = () => {
                     : "bg-red-100 text-red-700"
                 } px-3 py-1 rounded-full text-sm font-medium mb-2`}
               >
-                {orderDetails.isPaid ? "Approved" : "pending"}
+                {orderDetails.isPaid ? "Payment Paid" : "Payment pending"}
               </span>
               <span
-                className={`${
-                  orderDetails.isDelivered
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                } px-3 py-1 rounded-full text-sm font-medium mb-2`}
-              >
-                {orderDetails.isDelivered ? "Delivered" : "pending"}
-              </span>
+  className={`${
+    statusStyles[orderDetails.status] ||
+    "bg-gray-100 text-gray-700"
+  } px-3 py-1 rounded-full text-sm font-medium mb-2`}
+>
+  {orderDetails.status}
+</span>
+
             </div>
           </div>
           {/* Customer,Payment,Shipping Info */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-8">
             <div>
               <h4 className="text-lg font-semibold mb-2">Payment Info</h4>
-              <p>Payment Method: {orderDetails.paymentMethod}</p>
+              <p>Payment Method: Razorpay</p>
               <p>status: {orderDetails.isPaid ? "Paid" : "Unpaid"}</p>
             </div>
             <div>
@@ -72,40 +90,58 @@ const OrderDetailsPage = () => {
           </div>
           {/* Product list */}
           <div className="overflow-x-auto">
-            <h4 className="text-lg font-semibold mb-4">Products</h4>
-            <table className="min-w-full text-gray-600 mb-4">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="py-2 px-4">Name</th>
-                  <th className="py-2 px-4">Unit Price</th>
-                  <th className="py-2 px-4">Quantity</th>
-                  <th className="py-2 px-4">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orderDetails.orderItems.map((item) => (
-                  <tr key={item.productId} className="border-b">
-                    <td className="py-2 px-4 flex items-center">
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="w-12 h-12 object-cover rounded-lg mr-4"
-                      />
-                      <Link
-                        to={`/product/${item.productId}`}
-                        className="text-blue-500 hover:underline"
-                      >
-                        {item.name}
-                      </Link>
-                    </td>
-                    <td className="py-2 px-4">${item.price}</td>
-                    <td className="py-2 px-4">{item.quantity}</td>
-                    <td className="py-2 px-4">${item.price * item.quantity}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+  <h4 className="text-lg font-semibold mb-4">Products</h4>
+
+  <table className="w-full min-w-[600px] border-collapse text-gray-700">
+    <thead className="bg-gray-100">
+      <tr>
+        <th className="py-3 px-4 text-left">Product</th>
+        <th className="py-3 px-4 text-center">Unit Price</th>
+        <th className="py-3 px-4 text-center">Qty</th>
+        <th className="py-3 px-4 text-right">Total</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {orderDetails.orderItems.map((item) => (
+        <tr key={item.productId} className="border-b">
+          {/* Product */}
+          <td className="py-4 px-4">
+            <div className="flex items-center gap-4">
+              <img
+                src={item.image}
+                alt={item.name}
+                className="w-14 h-14 object-cover rounded"
+              />
+              <Link
+                to={`/product/${item.productId}`}
+                className="text-blue-600 hover:underline text-sm font-medium"
+              >
+                {item.name}
+              </Link>
+            </div>
+          </td>
+
+          {/* Unit Price */}
+          <td className="py-4 px-4 text-center">
+            ₹{item.price}
+          </td>
+
+          {/* Quantity */}
+          <td className="py-4 px-4 text-center">
+            {item.quantity}
+          </td>
+
+          {/* Total */}
+          <td className="py-4 px-4 text-right font-medium">
+            ₹{item.price * item.quantity}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
           {/* Back to Orders Link */}
           <Link to="/my-orders" className="text-blue-500 hover:underline">
             Back to My Orders

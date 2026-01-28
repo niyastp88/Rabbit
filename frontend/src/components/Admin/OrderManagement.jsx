@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import {
@@ -12,6 +12,8 @@ const OrderManagement = () => {
 
   const { user } = useSelector((state) => state.auth);
   const { orders, loading, error } = useSelector((state) => state.adminOrders);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+
   useEffect(() => {
     if (!user || user.role !== "admin") {
       navigate("/");
@@ -41,9 +43,11 @@ const OrderManagement = () => {
           {orders.length > 0 ? (
             orders.map((order) => (
               <tr
-                key={order._id}
-                className="border-b hover:bg-gray-50 cursor-pointer"
-              >
+  key={order._id}
+  className="border-b hover:bg-gray-50 cursor-pointer"
+  onClick={() => setSelectedOrder(order)}
+>
+
                 <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap">
                   #{order._id}
                 </td>
@@ -51,12 +55,14 @@ const OrderManagement = () => {
                 <td className="p-4">${order.totalPrice.toFixed(2)}</td>
                 <td className="px-4">
                   <select
-                    value={order.status}
-                    onChange={(e) =>
-                      handleStatusChange(order._id, e.target.value)
-                    }
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 block p-2.5"
-                  >
+  value={order.status}
+  onClick={(e) => e.stopPropagation()}
+  onChange={(e) =>
+    handleStatusChange(order._id, e.target.value)
+  }
+  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5"
+>
+
                     <option value="Processing">Processing</option>
                     <option value="Shipped">Shipped</option>
                     <option value="Delivered">Delivered</option>
@@ -65,11 +71,15 @@ const OrderManagement = () => {
                 </td>
                 <td className="p-4">
                   <button
-                    onClick={() => handleStatusChange(order._id, "Delivered")}
-                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-                  >
-                    Mark as Delivered
-                  </button>
+  onClick={(e) => {
+    e.stopPropagation();
+    handleStatusChange(order._id, "Delivered");
+  }}
+  className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+>
+  Mark as Delivered
+</button>
+
                 </td>
               </tr>
             ))
@@ -82,6 +92,84 @@ const OrderManagement = () => {
           )}
         </tbody>
       </table>
+      {selectedOrder && (
+  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="bg-white w-full max-w-3xl rounded-lg p-6 overflow-y-auto max-h-[90vh]">
+
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-semibold">
+          Order #{selectedOrder._id}
+        </h2>
+        <button
+          onClick={() => setSelectedOrder(null)}
+          className="text-gray-500 hover:text-black text-xl"
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Customer */}
+      <div className="mb-4">
+        <h3 className="font-semibold mb-1">Customer</h3>
+        <p>{selectedOrder.user.name}</p>
+        <p className="text-sm text-gray-500">{selectedOrder.user.email}</p>
+      </div>
+
+      {/* Shipping */}
+      <div className="mb-4">
+        <h3 className="font-semibold mb-1">Shipping Address</h3>
+        <p>{selectedOrder.shippingAddress.address}</p>
+        <p>
+          {selectedOrder.shippingAddress.city},{" "}
+          {selectedOrder.shippingAddress.postalcode}
+        </p>
+        <p>{selectedOrder.shippingAddress.country}</p>
+      </div>
+
+      {/* Products */}
+      <div>
+        <h3 className="font-semibold mb-2">Products</h3>
+
+        <div className="space-y-3">
+          {selectedOrder.orderItems.map((item) => (
+            <div
+              key={item.productId}
+              className="flex items-center justify-between border-b pb-2"
+            >
+              <div className="flex items-center gap-3">
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  className="w-14 h-14 object-cover rounded"
+                />
+                <div>
+                  <p className="font-medium">{item.name}</p>
+                  <p className="text-sm text-gray-500">
+                    Qty: {item.quantity}
+                  </p>
+                  <p className="text-sm text-gray-500">Size:{item.size}</p>
+                </div>
+              </div>
+              <p className="font-medium">
+                ₹{item.price * item.quantity}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-6 text-right">
+        <p className="text-lg font-semibold">
+          Total: ₹{selectedOrder.totalPrice}
+        </p>
+      </div>
+
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
