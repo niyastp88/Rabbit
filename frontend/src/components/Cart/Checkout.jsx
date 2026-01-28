@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import PaypalButton from "../Cart/PaypalButton";
+import RazorpayButton from "./RazorpayButton";
 import { useDispatch, useSelector } from "react-redux";
 import { createCheckout } from "../../redux/slices/checkoutSlice";
 import axios from "axios";
@@ -221,12 +221,13 @@ const Checkout = () => {
               </button>
             ) : (
               <div>
-                <h3 className="text-lg mb-4">Pay with Paypal</h3>
-                <PaypalButton
-                  amount={cart.totalPrice}
-                  onSuccess={handlePaymentSuccess}
-                  onError={(err) => alert("Payment failed.Try again")}
-                />
+                <h3 className="text-lg mb-4">Pay with Razorpay</h3>
+<RazorpayButton
+  checkoutId={checkoutId}
+  amount={cart.totalPrice}
+  onSuccess={() => navigate("/order-confirmation")}
+/>
+
               </div>
             )}
           </div>
@@ -253,13 +254,13 @@ const Checkout = () => {
                   <p className="text-gray-500">Color: {product.color}</p>
                 </div>
               </div>
-              <p className="text-xl">${product.price?.toLocaleString()}</p>
+              <p className="text-xl">Rs.{(product.price*product.quantity)?.toLocaleString()}</p>
             </div>
           ))}
         </div>
         <div className="flex justify-between items-center text-lg mb-4">
           <p>Subtotal</p>
-          <p>${cart.totalPrice?.toLocaleString()}</p>
+          <p>Rs.{cart.totalPrice?.toLocaleString()}</p>
         </div>
         <div className="flex justify-between items-center text-lg">
           <p>Shipping</p>
@@ -267,7 +268,7 @@ const Checkout = () => {
         </div>
         <div className="flex justify-between items-center text-lg mt-4 border-t pt-4">
           <p>Total</p>
-          <p>${cart.totalPrice?.toLocaleString()}</p>
+          <p>Rs.{cart.totalPrice?.toLocaleString()}</p>
         </div>
       </div>
     </div>

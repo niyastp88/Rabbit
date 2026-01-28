@@ -21,6 +21,9 @@ import OrderManagement from "./components/Admin/OrderManagement";
 import ProtectedRoute from "./components/Common/ProtectedRoute";
 import AddProductPage from "./components/Admin/AddProductPage";
 import CategoryManagement from "./components/Admin/categoryManagement";
+import PaymentFailedPage from "./pages/PaymentFailedPage";
+
+
 
 
 
@@ -52,7 +55,9 @@ const App = () => {
             <Route
               path="order-confirmation"
               element={<OrderConfirmationPage />}
+              
             />
+            <Route path="/payment-failed" element={<PaymentFailedPage />} />
             <Route path="order/:id" element={<OrderDetailsPage />} />
             <Route path="my-orders" element={<MyOrdersPage />} />
           </Route>
@@ -73,6 +78,7 @@ const App = () => {
             <Route path="/admin/categories" element={<CategoryManagement />} />
             <Route path="/admin/brands" element={<BrandManagement />} />
             <Route path="/admin/materials" element={<MaterialManagement />} />
+            
             
             
             

@@ -4,8 +4,11 @@ const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
 const { protect } = require("../middleware/authMiddleware");
+const razorpay = require("../utils/razorpay");
+const crypto = require("crypto");
 
 const router = express.Router();
+
 
 // @route POST /api/checkout
 // @desc Create a new checkout session
@@ -108,5 +111,59 @@ router.post("/:id/finalize", protect, async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 });
+
+// inside checkoutRoutes.js (below create checkout route)
+
+
+
+router.post("/:id/razorpay", protect, async (req, res) => {
+  const checkout = await Checkout.findById(req.params.id);
+  if (!checkout) {
+    return res.status(404).json({ message: "Checkout not found" });
+  }
+
+  const options = {
+    amount: checkout.totalPrice * 100, // ₹ → paise
+    currency: "INR",
+    receipt: `checkout_${checkout._id}`,
+  };
+
+  const order = await razorpay.orders.create(options);
+  res.json(order);
+});
+
+router.post("/:id/verify", protect, async (req, res) => {
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+    req.body;
+
+  const body = razorpay_order_id + "|" + razorpay_payment_id;
+
+  const expectedSignature = crypto
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+    .update(body)
+    .digest("hex");
+
+  if (expectedSignature !== razorpay_signature) {
+    return res.status(400).json({ message: "Payment verification failed" });
+  }
+
+  // 🔥 REUSE EXISTING PAY LOGIC
+  req.body = {
+    paymentStatus: "paid",
+    paymentDetails: req.body,
+  };
+
+  // call existing pay route logic
+  const checkout = await Checkout.findById(req.params.id);
+  checkout.isPaid = true;
+  checkout.paymentStatus = "paid";
+  checkout.paymentDetails = req.body;
+  checkout.paidAt = Date.now();
+  await checkout.save();
+
+  res.json(checkout);
+});
+
+
 
 module.exports = router;

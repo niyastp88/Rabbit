@@ -5,9 +5,23 @@ import { clearCart } from "../redux/slices/cartSlice";
 
 const calculateEstimateDelivery = (createdAt) => {
   const orderDate = new Date(createdAt);
-  orderDate.setDate(orderDate.getDate() + 10); // Add 10 days to the order date
-  return orderDate.toLocaleDateString();
+  orderDate.setDate(orderDate.getDate() + 10);
+
+  const day = String(orderDate.getDate()).padStart(2, "0");
+  const month = String(orderDate.getMonth() + 1).padStart(2, "0");
+  const year = orderDate.getFullYear();
+
+  return `${day}/${month}/${year}`;
 };
+
+const formatDateDDMMYYYY = (date) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
+
 const OrderConfirmationPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,8 +50,9 @@ const OrderConfirmationPage = () => {
                 Order ID: {checkout._id}
               </h2>
               <p className="text-gray-500">
-                Order date: {new Date(checkout.createdAt).toLocaleDateString()}
-              </p>
+  Order date: {formatDateDDMMYYYY(checkout.createdAt)}
+</p>
+
             </div>
             {/* Estimated Delivery */}
             <div>
@@ -63,7 +78,7 @@ const OrderConfirmationPage = () => {
                   </p>
                 </div>
                 <div className="ml-auto text-right">
-                  <p className="text-md">${item.price}</p>
+                  <p className="text-md">Rs.{(item.price*item.quantity)}</p>
                   <p className="text-sm text-gray-500">qty: {item.quantity}</p>
                 </div>
               </div>
@@ -74,7 +89,7 @@ const OrderConfirmationPage = () => {
             {/* Payment Info */}
             <div>
               <h4 className="text-lg font-semibold mb-2">Payment</h4>
-              <p className="text-gray-600">Paypal</p>
+              <p className="text-gray-600">Razorpay</p>
             </div>
             {/* Delivery Info */}
             <div>
@@ -83,7 +98,7 @@ const OrderConfirmationPage = () => {
                 {checkout.shippingAddress.address}
               </p>
               <p className="text-gray-600">
-                {checkout.shippingAddress.city}, {checkout.shippingAddress.city}
+                {checkout.shippingAddress.city}, {checkout.shippingAddress.postalcode}
               </p>
             </div>
           </div>
