@@ -41,7 +41,9 @@ const ProductGrid = ({ products, loading, error }) => {
       toast.error("Wishlist action failed");
     }
   };
-
+  if(products.length===0){
+    return <h3>No Products Found</h3>
+  }
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {products.map((product) => {

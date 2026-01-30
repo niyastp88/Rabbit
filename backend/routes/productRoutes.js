@@ -235,10 +235,28 @@ router.get("/", async (req, res) => {
       }
     }
     // Fetch products and apply sorting and limit
-    let products = await Product.find(query)
-      .sort(sort)
-      .limit(Number(limit || 0));
-    res.json(products);
+    // pagination
+const page = Number(req.query.page) || 1;
+const limitNum = Number(req.query.limit) || 12;
+const skip = (page - 1) * limitNum;
+
+// count total products
+const total = await Product.countDocuments(query);
+
+// fetch paginated products
+const products = await Product.find(query)
+  .sort(sort)
+  .skip(skip)
+  .limit(limitNum);
+
+res.json({
+  products,
+  page,
+  pages: Math.ceil(total / limitNum),
+  total,
+});
+
+    
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
