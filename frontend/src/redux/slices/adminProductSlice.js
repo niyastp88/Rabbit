@@ -6,15 +6,22 @@ const API_URL = `${import.meta.env.VITE_BACKEND_URL}`;
 // Async thunk to fetch admin products
 export const fetchAdminProducts = createAsyncThunk(
   "adminProducts/fetchProducts",
-  async () => {
-    const response = await axios.get(`${API_URL}/api/admin/products`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-      },
-    });
+  async (params = {}) => {
+    const { page = 1, limit = 10 } = params;
+
+    const response = await axios.get(
+      `${API_URL}/api/admin/products?page=${page}&limit=${limit}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+        },
+      }
+    );
+
     return response.data;
   }
 );
+
 
 // Async function to create a new product
 export const createProduct = createAsyncThunk(
@@ -27,10 +34,10 @@ export const createProduct = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${localStorage.getItem("userToken")}`,
         },
-      }
+      },
     );
     return response.data;
-  }
+  },
 );
 
 // async thunk to update an existing product
@@ -44,10 +51,10 @@ export const updateProduct = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${localStorage.getItem("userToken")}`,
         },
-      }
+      },
     );
     return response.data;
-  }
+  },
 );
 
 // async thunk to delete a product
@@ -60,16 +67,20 @@ export const deleteProduct = createAsyncThunk(
       },
     });
     return id;
-  }
+  },
 );
 
 const adminProductSlice = createSlice({
   name: "adminProducts",
   initialState: {
     products: [],
+    page: 1,
+    pages: 1,
+    total: 0,
     loading: false,
     error: null,
   },
+
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -78,8 +89,12 @@ const adminProductSlice = createSlice({
       })
       .addCase(fetchAdminProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.products = action.payload;
+        state.products = action.payload.products;
+        state.page = action.payload.page;
+        state.pages = action.payload.pages;
+        state.total = action.payload.total;
       })
+
       .addCase(fetchAdminProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
@@ -91,7 +106,7 @@ const adminProductSlice = createSlice({
       // Update Product
       .addCase(updateProduct.fulfilled, (state, action) => {
         const index = state.products.findIndex(
-          (product) => product._id === action.payload._id
+          (product) => product._id === action.payload._id,
         );
         if (index !== -1) {
           state.products[index] = action.payload;
@@ -100,7 +115,7 @@ const adminProductSlice = createSlice({
       // Delete Product
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.products = state.products.filter(
-          (product) => product._id !== action.payload
+          (product) => product._id !== action.payload,
         );
       });
   },
