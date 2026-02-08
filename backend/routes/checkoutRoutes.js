@@ -72,7 +72,7 @@ router.put("/:id/pay", protect, async (req, res) => {
 });
 
 // @route POST /api/checkout/:id/finalize
-// @route Finalize checkout and convert to an order after payment confirmation
+// @desc Finalize checkout, create order, reduce stock
 // @access Private
 router.post("/:id/finalize", protect, async (req, res) => {
   try {
@@ -80,37 +80,79 @@ router.post("/:id/finalize", protect, async (req, res) => {
     if (!checkout) {
       return res.status(404).json({ message: "Checkout not found" });
     }
-    if (checkout.isPaid && !checkout.isFinalized) {
-      // Create final order based on the checkout details
-      const finalOrder = await Order.create({
-        user: checkout.user,
-        orderItems: checkout.checkoutItems,
-        shippingAddress: checkout.shippingAddress,
-        paymentMethod: checkout.paymentMethod,
-        totalPrice: checkout.totalPrice,
-        isPaid: true,
-        paidAt: checkout.paidAt,
-        isDelivered: false,
-        paymentStatus: "paid",
-        paymentDetails: checkout.paymentDetails,
-      });
-      // Mark the checkout as finalized
-      checkout.isFinalized = true;
-      checkout.finalizedAt = Date.now();
-      await checkout.save();
-      // Delete the cart associated with the user
-      await Cart.findOneAndDelete({ user: checkout.user });
-      res.status(201).json(finalOrder);
-    } else if (checkout.isFinalized) {
-      res.status(400).json({ message: "Checkout already finalized" });
-    } else {
-      res.status(400).json({ message: "checkout is not paid" });
+
+    // 🔒 Already finalized guard
+    if (checkout.isFinalized) {
+      return res.status(400).json({ message: "Checkout already finalized" });
     }
+
+    // 🔒 Payment not completed
+    if (!checkout.isPaid) {
+      return res.status(400).json({ message: "Checkout is not paid" });
+    }
+
+    /* ================================
+       1️⃣ STOCK VALIDATION & REDUCTION
+    ================================= */
+    for (const item of checkout.checkoutItems) {
+      const product = await Product.findById(item.productId);
+
+      if (!product) {
+        return res.status(404).json({
+          message: `Product not found: ${item.productId}`,
+        });
+      }
+
+      if (product.countInStock < item.quantity) {
+        return res.status(400).json({
+          message: `Insufficient stock for ${product.name}. Only ${product.countInStock} left.`,
+        });
+      }
+    }
+
+    // 🔥 Second loop → actual stock update
+    for (const item of checkout.checkoutItems) {
+      const product = await Product.findById(item.productId);
+
+      product.countInStock -= item.quantity;
+      await product.save();
+    }
+
+    /* ================================
+       2️⃣ CREATE FINAL ORDER
+    ================================= */
+    const finalOrder = await Order.create({
+      user: checkout.user,
+      orderItems: checkout.checkoutItems,
+      shippingAddress: checkout.shippingAddress,
+      paymentMethod: checkout.paymentMethod,
+      totalPrice: checkout.totalPrice,
+      isPaid: true,
+      paidAt: checkout.paidAt,
+      isDelivered: false,
+      paymentStatus: "paid",
+      paymentDetails: checkout.paymentDetails,
+    });
+
+    /* ================================
+       3️⃣ FINALIZE CHECKOUT
+    ================================= */
+    checkout.isFinalized = true;
+    checkout.finalizedAt = Date.now();
+    await checkout.save();
+
+    /* ================================
+       4️⃣ CLEAR USER CART
+    ================================= */
+    await Cart.findOneAndDelete({ user: checkout.user });
+
+    res.status(201).json(finalOrder);
   } catch (error) {
-    console.error(error);
+    console.error("Finalize error:", error);
     res.status(500).json({ message: "Server Error" });
   }
 });
+
 
 // inside checkoutRoutes.js (below create checkout route)
 

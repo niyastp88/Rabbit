@@ -50,8 +50,10 @@ const ProductGrid = ({ products, loading, error }) => {
         const isWishlisted = wishlistProducts.some(
           (item) => item.product._id === product._id
         );
+        const isOutOfStock = product.countInStock === 0;
 
         return (
+          
           <Link
             key={product._id}
             to={`/product/${product._id}`}
@@ -73,12 +75,20 @@ const ProductGrid = ({ products, loading, error }) => {
                   {isWishlisted ? "❤️" : "🤍"}
                 </button>
               )}
+              {isOutOfStock && (
+  <span className="absolute top-3 left-3 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded">
+    OUT OF STOCK
+  </span>
+)}
+
 
               <div className="w-full h-96 mb-4">
                 <img
                   src={product.images[0].url}
                   alt={product.name}
-                  className="w-full h-full object-cover rounded-lg"
+                  className={`w-full h-full object-cover rounded-lg ${
+    isOutOfStock ? "opacity-50" : ""
+  }`}
                 />
               </div>
 
