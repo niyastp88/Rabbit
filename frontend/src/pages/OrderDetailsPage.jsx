@@ -3,6 +3,8 @@ import { Link, useParams } from "react-router";
 import ProductGrid from "../components/Products/ProductGrid";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrderDetails } from "../redux/slices/orderSlice";
+import ProductReviewForm from "../components/Reviews/ProductReviewForm";
+
 
 const OrderDetailsPage = () => {
   const formatDate = (date) => {
@@ -12,6 +14,8 @@ const OrderDetailsPage = () => {
   const year = d.getFullYear();
   return `${day}/${month}/${year}`;
 };
+
+
 
   const statusStyles = {
   Processing: "bg-yellow-100 text-yellow-700",
@@ -103,42 +107,51 @@ const OrderDetailsPage = () => {
     </thead>
 
     <tbody>
-      {orderDetails.orderItems.map((item) => (
-        <tr key={item.productId} className="border-b">
-          {/* Product */}
-          <td className="py-4 px-4">
-            <div className="flex items-center gap-4">
-              <img
-                src={item.image}
-                alt={item.name}
-                className="w-14 h-14 object-cover rounded"
-              />
-              <Link
-                to={`/product/${item.productId}`}
-                className="text-blue-600 hover:underline text-sm font-medium"
-              >
-                {item.name}
-              </Link>
-            </div>
-          </td>
+  {orderDetails.orderItems.map((item) => (
+    <React.Fragment key={item.productId}>
+      {/* PRODUCT ROW */}
+      <tr className="border-b">
+        <td className="py-4 px-4">
+          <div className="flex items-center gap-4">
+            <img
+              src={item.image}
+              alt={item.name}
+              className="w-14 h-14 object-cover rounded"
+            />
+            <Link
+              to={`/product/${item.productId}`}
+              className="text-blue-600 hover:underline text-sm font-medium"
+            >
+              {item.name}
+            </Link>
+          </div>
+        </td>
 
-          {/* Unit Price */}
-          <td className="py-4 px-4 text-center">
-            ₹{item.price}
-          </td>
+        <td className="py-4 px-4 text-center">
+          ₹{item.price}
+        </td>
 
-          {/* Quantity */}
-          <td className="py-4 px-4 text-center">
-            {item.quantity}
-          </td>
+        <td className="py-4 px-4 text-center">
+          {item.quantity}
+        </td>
 
-          {/* Total */}
-          <td className="py-4 px-4 text-right font-medium">
-            ₹{item.price * item.quantity}
+        <td className="py-4 px-4 text-right font-medium">
+          ₹{item.price * item.quantity}
+        </td>
+      </tr>
+
+      {/* ✅ REVIEW ROW (ONLY IF DELIVERED) */}
+      {orderDetails.status === "Delivered" && (
+        <tr className="bg-gray-50">
+          <td colSpan="4" className="px-4 py-4">
+            <ProductReviewForm productId={item.productId} />
           </td>
         </tr>
-      ))}
-    </tbody>
+      )}
+    </React.Fragment>
+  ))}
+</tbody>
+
   </table>
 </div>
 

@@ -55,10 +55,6 @@ const orderSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    isPaid: {
-      type: Boolean,
-      default: false,
-    },
     paidAt: {
       type: Date,
     },

@@ -5,6 +5,8 @@ import axios from "axios";
 import { addProduct } from "../../redux/slices/productsSlice";
 import { toast } from "sonner";
 import { fetchCategories } from "../../redux/slices/categorySlice";
+import { fetchMaterials } from "../../redux/slices/materialSlice";
+import { fetchBrands } from "../../redux/slices/brandSlice";
 
 
 
@@ -13,6 +15,8 @@ const AddProductPage = () => {
   const navigate = useNavigate();
   const { loading, error } = useSelector((state) => state.products);
   const { categories } = useSelector((state) => state.categories);
+  const { brands } = useSelector((state) => state.brands);
+    const { materials } = useSelector((state) => state.materials);
 
   useEffect(() => {
   dispatch(fetchCategories());
@@ -181,38 +185,45 @@ const AddProductPage = () => {
 
 
         <div className="mb-4">
-          <label className="block font-semibold mb-2">Brand</label>
-          <select
-            name="brand"
-            value={productData.brand}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select Brand</option>
-            <option value="Basics">Basics</option>
-            <option value="Allen Solly">Allen Solly</option>
-            <option value="Indigo Nation">Indigo Nation</option>
-            <option value="LP">LP</option>
-            
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block font-semibold mb-2">Material</label>
-          <select
-            name="material"
-            value={productData.material}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Select Material</option>
-            <option value="Cotton">Cotton</option>
-            <option value="Cotton Blend">Cotton Blend</option>
-            
-            
-          </select>
-        </div>
+  <label className="block font-semibold mb-2">
+    Brand
+  </label>
+  <select
+    name="brand"
+    value={productData.brand}
+    onChange={handleChange}
+    required
+    className="w-full p-2 border rounded"
+  >
+    <option value="">Select Brand</option>
+
+    {brands.map((brand) => (
+      <option key={brand._id} value={brand.name}>
+        {brand.name}
+      </option>
+    ))}
+  </select>
+</div>
+<div className="mb-4">
+  <label className="block font-semibold mb-2">
+    Material
+  </label>
+  <select
+    name="material"
+    value={productData.material}
+    onChange={handleChange}
+    required
+    className="w-full p-2 border rounded"
+  >
+    <option value="">Select Material</option>
+
+    {materials.map((material) => (
+      <option key={material._id} value={material.name}>
+        {material.name}
+      </option>
+    ))}
+  </select>
+</div>
 
         <div className="mb-4">
           <label className="block font-semibold mb-2">Gender</label>

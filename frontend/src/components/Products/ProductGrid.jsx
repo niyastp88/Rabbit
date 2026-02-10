@@ -51,6 +51,9 @@ const ProductGrid = ({ products, loading, error }) => {
           (item) => item.product._id === product._id
         );
         const isOutOfStock = product.countInStock === 0;
+        const avgRating = product.rating || 0;
+const reviewCount = product.numReviews || 0;
+
 
         return (
           
@@ -93,6 +96,32 @@ const ProductGrid = ({ products, loading, error }) => {
               </div>
 
               <h3 className="text-sm mb-2">{product.name}</h3>
+              {/* ⭐ RATING */}
+<div className="flex items-center gap-1 mb-1">
+  {[1, 2, 3, 4, 5].map((star) => (
+    <span
+      key={star}
+      className={`text-sm ${
+        star <= Math.round(product.rating)
+          ? "text-yellow-400"
+          : "text-gray-300"
+      }`}
+    >
+      ★
+    </span>
+  ))}
+
+  {product.numReviews > 0 ? (
+    <span className="text-xs text-gray-500 ml-1">
+      ({product.rating.toFixed(1)})
+    </span>
+  ) : (
+    <span className="text-xs text-gray-400 ml-1">
+      No reviews
+    </span>
+  )}
+</div>
+
               <p className="text-gray-500 font-medium text-sm">
                 ₹ {product.price}
               </p>

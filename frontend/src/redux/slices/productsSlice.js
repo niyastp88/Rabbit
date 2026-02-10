@@ -106,6 +106,30 @@ export const fetchSimilarProducts = createAsyncThunk(
   }
 );
 
+// ADD PRODUCT REVIEW
+export const addProductReview = createAsyncThunk(
+  "products/addProductReview",
+  async ({ productId, rating, comment }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/review/${productId}/reviews`,
+        { rating, comment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Review failed" }
+      );
+    }
+  }
+);
+
+
 const productSlice = createSlice({
   name: "products",
   initialState: {
@@ -226,7 +250,29 @@ state.total = action.payload.total;
       .addCase(addProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || action.error?.message;
-      });
+      })
+      .addCase(addProductReview.pending, (state) => {
+  state.loading = true;
+})
+.addCase(addProductReview.fulfilled, (state, action) => {
+  state.loading = false;
+
+  if (state.selectedProduct) {
+    state.selectedProduct.reviews.push(action.payload);
+    state.selectedProduct.numReviews =
+      state.selectedProduct.reviews.length;
+
+    state.selectedProduct.rating =
+      state.selectedProduct.reviews.reduce((acc, r) => acc + r.rating, 0) /
+      state.selectedProduct.numReviews;
+  }
+})
+
+.addCase(addProductReview.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload?.message;
+});
+
   },
 });
 

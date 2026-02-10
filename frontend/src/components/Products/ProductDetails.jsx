@@ -43,6 +43,8 @@ const ProductDetails = ({ productId, home }) => {
   /* ================= STOCK LOGIC ================= */
   const stock = selectedProduct?.countInStock || 0;
   const isOutOfStock = stock === 0;
+  const reviews = selectedProduct?.reviews || [];
+
 
   /* ================= QUANTITY HANDLER ================= */
   const handleQuantityChange = (type) => {
@@ -234,6 +236,86 @@ const ProductDetails = ({ productId, home }) => {
               </button>
             </div>
           </div>
+          {/* ================= REVIEWS SECTION ================= */}
+{!home && (<div className="mt-16">
+  <h2 className="text-2xl font-semibold mb-4">
+    Customer Reviews
+    <span className="text-gray-500 text-base ml-2">
+      ({selectedProduct.numReviews})
+    </span>
+  </h2>
+
+  {/* ⭐ Average rating */}
+  <div className="flex items-center gap-2 mb-6">
+    <div className="flex">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <span
+          key={star}
+          className={`text-xl ${
+            star <= Math.round(selectedProduct.rating)
+              ? "text-yellow-400"
+              : "text-gray-300"
+          }`}
+        >
+          ★
+        </span>
+      ))}
+    </div>
+    <span className="text-gray-600">
+      {selectedProduct.rating.toFixed(1)} / 5
+    </span>
+  </div>
+
+  {/* No reviews */}
+  {reviews.length === 0 && (
+    <p className="text-gray-500">No reviews yet</p>
+  )}
+
+  {/* Reviews list */}
+  <div className="space-y-6">
+    {reviews
+      .slice() // avoid mutating state
+      .sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      )
+      .map((review) => (
+        <div
+          key={review._id}
+          className="border rounded-lg p-4"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <p className="font-medium">{review.name}</p>
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={`text-sm ${
+                    star <= review.rating
+                      ? "text-yellow-400"
+                      : "text-gray-300"
+                  }`}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {review.comment && (
+            <p className="text-gray-600 text-sm">
+              {review.comment}
+            </p>
+          )}
+
+          <p className="text-xs text-gray-400 mt-2">
+            {new Date(review.createdAt).toLocaleDateString()}
+          </p>
+        </div>
+      ))}
+  </div>
+</div>
+)}
+
 
           {/* SIMILAR PRODUCTS */}
           {!home && (

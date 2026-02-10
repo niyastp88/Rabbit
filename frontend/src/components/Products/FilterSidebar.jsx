@@ -25,7 +25,7 @@ const FilterSidebar = () => {
     material: [],
     brand: [],
     minPrice: 0,
-    maxPrice: 100,
+    maxPrice: 1000,
   });
   const [priceRange, setPriceRange] = useState([0, 100]);
   
@@ -56,7 +56,7 @@ const FilterSidebar = () => {
       material: params.material ? params.material.split(",") : [],
       brand: params.brand ? params.brand.split(",") : [],
       minPrice: params.minPrice || 0,
-      maxPrice: params.maxPrice || 100,
+      maxPrice: params.maxPrice || 1000,
     });
     setPriceRange([0, params.maxPrice || 100]);
   }, [searchParams]);
