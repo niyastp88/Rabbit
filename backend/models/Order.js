@@ -20,11 +20,22 @@ const orderItemSchema = new mongoose.Schema(
       required: true,
     },
     size: String,
-    coloe: String,
+    color: String,
     quantity: {
       type: Number,
       required: true,
     },
+    // RETURN
+    returnRequested: { type: Boolean, default: false },
+    returnReason: String,
+    returnComment: String,
+    returnRequestedAt: Date,
+    returnStatus: {
+  type: String,
+  enum: ["pending", "approved", "rejected"],
+  default: "pending",
+},
+
   },
   { _id: false }
 );
