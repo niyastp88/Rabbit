@@ -1,98 +1,20 @@
 const express = require("express");
-const User = require("../models/User");
-const jwt = require("jsonwebtoken");
+const {
+  registerUser,
+  loginUser,
+  getUserProfile,
+} = require("../controller/userController");
 const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// @route POST /api/user/register
-// @desc Register a new user
-//@access Public
+//Register a new user
+router.post("/register", registerUser);
 
-router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    // Registration logic
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: "User already exists" });
-    user = new User({ name, email, password });
-    await user.save();
-    //Create JWT Playload
-    const playload = { user: { id: user._id, role: user.role } };
+// Authenticate user
+router.post("/login", loginUser);
 
-    // Sign and return the token along with user data
-    jwt.sign(
-      playload,
-      process.env.JWT_SECRET,
-      { expiresIn: "40h" },
-      (err, token) => {
-        if (err) throw err;
-        console.log(token);
-        res.status(201).json({
-          user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          },
-          token,
-        });
-      }
-    );
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("server error");
-  }
-});
-
-// @route POST /api/users/login
-// @desc Authenticate user
-// @access Public
-
-router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    // Find the user by email
-    let user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Invalid Credentials" });
-    const isMatch = await user.matchPassword(password);
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid Credentials" });
-    //Create JWT Playload
-    const playload = { user: { id: user._id, role: user.role } };
-
-    // Sign and return the token along with user data
-    jwt.sign(
-      playload,
-      process.env.JWT_SECRET,
-      { expiresIn: "40h" },
-      (err, token) => {
-        if (err) throw err;
-        console.log(token);
-        res.json({
-          user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          },
-          token,
-        });
-      }
-    );
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Server Error");
-  }
-});
-
-// @route GET /api/user/profile
-// @desc Get logged-in user's profile (Protected Route)
-// @access Private
-
-router.get("/profile", protect, async (req, res) => {
-  res.json(req.user);
-});
+//  Get logged-in user's profile (Protected Route)
+router.get("/profile", protect, getUserProfile);
 
 module.exports = router;
