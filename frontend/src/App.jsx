@@ -1,35 +1,34 @@
 import React,{Suspense,lazy} from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import UserLayout from "./components/Layout/UserLayout";
-import Home from "./pages/Home";
 import { Toaster } from "sonner";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Profile from "./pages/Profile";
-import CollectionPage from "./pages/CollectionPage";
-import ProductDetails from "./components/Products/ProductDetails";
-import Checkout from "./components/Cart/Checkout";
-import OrderConfirmationPage from "./pages/OrderConfirmationPage";
-import OrderDetailsPage from "./pages/OrderDetailsPage";
-import MyOrdersPage from "./pages/MyOrdersPage";
-import AdminLayout from "./components/Admin/AdminLayout";
-import AdminHomePage from "./pages/AdminHomePage";
-import UserManagement from "./components/Admin/UserManagement";
-import ProductManagement from "./components/Admin/ProductManagement";
-import EditProductPage from "./components/Admin/EditProductPage";
-import OrderManagement from "./components/Admin/OrderManagement";
-import ProtectedRoute from "./components/Common/ProtectedRoute";
-import AddProductPage from "./components/Admin/AddProductPage";
-import CategoryManagement from "./components/Admin/categoryManagement";
-import PaymentFailedPage from "./pages/PaymentFailedPage";
-
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
-import BrandManagement from "./components/Admin/brandManagemnt";
-import MaterialManagement from "./components/Admin/materialManagement";
-import HomeContentManagement from "./components/Admin/HomeContentManagment";
-import ForgotPassword from "./pages/forgotPassword";
-import ResetPassword from "./pages/ResetPassword";
+const UserLayout =lazy(()=> import("./components/Layout/UserLayout"))
+const Home=lazy(()=>import("./pages/Home"))
+const Login= lazy(()=>import("./pages/Login"))
+const Register=lazy(()=>import("./pages/Register"))
+const Profile = lazy(()=>import("./pages/Profile"))
+const CollectionPage = lazy(()=>import("./pages/CollectionPage"))
+const ProductDetails = lazy(()=>import("./components/Products/ProductDetails"))
+const Checkout = lazy(()=>import("./components/Cart/Checkout"))
+const OrderConfirmationPage = lazy(()=>import("./pages/OrderConfirmationPage"))
+const OrderDetailsPage = lazy(()=>import("./pages/OrderDetailsPage"))
+const MyOrdersPage = lazy(()=>import("./pages/MyOrdersPage"))
+const AdminLayout = lazy(()=>import("./components/Admin/AdminLayout"))
+const AdminHomePage = lazy(()=>import("./pages/AdminHomePage"))
+const UserManagement = lazy(()=>import("./components/Admin/UserManagement"))
+const ProductManagement = lazy(()=>import("./components/Admin/ProductManagement"))
+const EditProductPage = lazy(()=>import("./components/Admin/EditProductPage"))
+const OrderManagement = lazy(()=>import("./components/Admin/OrderManagement"))
+const ProtectedRoute = lazy(()=>import("./components/Common/ProtectedRoute"))
+const AddProductPage = lazy(()=>import("./components/Admin/AddProductPage"))
+const CategoryManagement = lazy(()=>import("./components/Admin/categoryManagement"))
+const PaymentFailedPage = lazy(()=>import("./pages/PaymentFailedPage"))
+const BrandManagement = lazy(()=>import("./components/Admin/brandManagemnt"))
+const MaterialManagement = lazy(()=>import("./components/Admin/materialManagement"))
+const HomeContentManagement = lazy(()=>import("./components/Admin/HomeContentManagment"))
+const ForgotPassword = lazy(()=>import("./pages/forgotPassword"))
+const ResetPassword = lazy(()=>import("./pages/ResetPassword"))
 
 
 const App = () => {
@@ -37,6 +36,13 @@ const App = () => {
     <Provider store={store}>
       <BrowserRouter>
         <Toaster position="top-right" />
+        <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center text-lg font-semibold">
+          Loading...
+        </div>
+      }
+    >
         <Routes>
           <Route path="/" element={<UserLayout />}>
             <Route index element={<Home />} />
@@ -84,6 +90,7 @@ const App = () => {
             />
           </Route>
         </Routes>
+        </Suspense>
       </BrowserRouter>
     </Provider>
   );
