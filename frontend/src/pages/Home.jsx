@@ -49,6 +49,7 @@ const Home = () => {
     fetchBestSeller();
     fetchHomeContent();
   }, [disPatch]);
+
   return (
     <div>
       <Hero image={homeContent?.heroImage} />

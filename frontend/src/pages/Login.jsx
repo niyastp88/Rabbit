@@ -20,15 +20,18 @@ const Login = () => {
 
   useEffect(() => {
   if (!user) return;
+  navigate(isCheckoutRedirect ? "/checkout" : "/", {
+        replace: true,
+      });
 
   const syncCart = async () => {
     try {
-      // 1️⃣ merge guest cart
+      // merge guest cart
       if (guestId) {
         await dispatch(mergeCart({ guestId })).unwrap();
       }
 
-      // 2️⃣ 🔥 ALWAYS fetch fresh cart
+      //  ALWAYS fetch fresh cart
       await dispatch(
         fetchCart({
           userId: user._id,
@@ -37,9 +40,7 @@ const Login = () => {
       ).unwrap();
 
       // 3️⃣ redirect
-      navigate(isCheckoutRedirect ? "/checkout" : "/", {
-        replace: true,
-      });
+      
     } catch (err) {
       console.error("Cart sync failed", err);
       navigate("/");
@@ -47,7 +48,7 @@ const Login = () => {
   };
 
   syncCart();
-}, [user]); // ⚠️ ONLY user dependency
+}, [user]); 
 
 
   const handleSubmit = async (e) => {

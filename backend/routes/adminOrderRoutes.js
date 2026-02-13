@@ -3,6 +3,7 @@ const { protect, admin } = require("../middleware/authMiddleware");
 const {
   getAllOrders,
   updateOrderStatus,
+  deleteOrder,
 } = require("../controller/adminOrderController");
 
 const router = express.Router();
@@ -17,6 +18,6 @@ router.put("/:id", protect, admin, updateOrderStatus);
 
 // Delete an order
 
-router.delete("/:id", protect, admin);
+router.delete("/:id", protect, admin,deleteOrder);
 
 module.exports = router;

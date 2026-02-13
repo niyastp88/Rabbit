@@ -3,6 +3,7 @@ const { protect } = require("../middleware/authMiddleware");
 const {
   toggleWishlist,
   getWishlist,
+  removeFromWishlist,
 } = require("../controller/wishlistController");
 
 const router = express.Router();
@@ -17,6 +18,6 @@ router.get("/", protect, getWishlist);
 
 // Remove product from wishlist
 
-router.delete("/:productId", protect);
+router.delete("/:productId", protect,removeFromWishlist);
 
 module.exports = router;

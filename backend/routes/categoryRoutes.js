@@ -3,6 +3,7 @@ const { protect, admin } = require("../middleware/authMiddleware");
 const {
   createCategory,
   getCategories,
+  deleteCategory,
 } = require("../controller/categoryController");
 
 const router = express.Router();
@@ -17,6 +18,6 @@ router.get("/", getCategories);
 
 // Delete a category by ID
 
-router.delete("/:id", protect, admin);
+router.delete("/:id", protect, admin,deleteCategory);
 
 module.exports = router;
