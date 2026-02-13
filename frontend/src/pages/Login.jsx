@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { loginUser, clearError } from "../redux/slices/authSlice";
+import { loginUser, clearError, googleLogin } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { mergeCart, fetchCart } from "../redux/slices/cartSlice";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -124,6 +125,19 @@ const Login = () => {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
+        <GoogleLogin
+  onSuccess={async (credentialResponse) => {
+    const result = await dispatch(
+      googleLogin({ token: credentialResponse.credential })
+    );
+
+    if (result.meta.requestStatus === "fulfilled") {
+      navigate("/");
+    }
+  }}
+  onError={() => console.log("Google Login Failed")}
+/>
 
         <p className="text-sm text-center mt-6">
           Don&apos;t have an account?{" "}

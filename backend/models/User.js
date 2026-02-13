@@ -25,7 +25,9 @@ const userSchema = new mongoose.Schema(
 
     password: {
       type: String,
-      required: true,
+      required: function () {
+    return !this.googleId; // password required only if NOT google user
+  },
       minlength: 8,
       validate: {
         validator: function (value) {
@@ -48,6 +50,15 @@ const userSchema = new mongoose.Schema(
     emailOTPExpire: Date,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    googleId: {
+  type: String,
+},
+
+isBlocked: {
+  type: Boolean,
+  default: false,
+},
+
   },
   { timestamps: true },
 );

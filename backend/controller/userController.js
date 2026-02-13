@@ -4,6 +4,8 @@ const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
 const PendingUser = require("../models/PendingUser");
 const bcrypt = require("bcryptjs");
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 require("dotenv").config();
 
 
@@ -276,6 +278,55 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.googleAuth = async (req, res) => {
+  try {
+    const { token } = req.body;
+
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { sub, email, name } = ticket.getPayload();
+
+    let user = await User.findOne({ email });
+
+    if (user && user.isBlocked) {
+      return res.status(403).json({ message: "Account is blocked" });
+    }
+
+    if (!user) {
+      user = await User.create({
+        name,
+        email,
+        googleId: sub
+        
+      });
+    }
+
+    const payload = {
+      user: { id: user._id, role: user.role },
+    };
+
+    const jwtToken = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "40h",
+    });
+
+    res.json({
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      token: jwtToken,
+    });
+  } catch (error) {
+    console.error("Google Auth Error:", error);
+    res.status(500).json({ message: "Google login failed" });
   }
 };
 

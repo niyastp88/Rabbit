@@ -76,6 +76,26 @@ export const verifyOTP = createAsyncThunk(
   }
 );
 
+export const googleLogin = createAsyncThunk(
+  "auth/googleLogin",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/google`,
+        data
+      );
+
+      localStorage.setItem("userInfo", JSON.stringify(response.data.user));
+      localStorage.setItem("userToken", response.data.token);
+
+      return response.data.user;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+
 
 // slice
 const authSlice = createSlice({
@@ -133,7 +153,11 @@ const authSlice = createSlice({
 .addCase(verifyOTP.rejected, (state, action) => {
   state.loading = false;
   state.error = action.payload?.message || action.error?.message;
+})
+.addCase(googleLogin.fulfilled, (state, action) => {
+  state.user = action.payload;
 });
+
 
   },
 });
