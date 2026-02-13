@@ -3,6 +3,7 @@ import { Toaster } from "sonner";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
+import ScrollToTop from "./components/Common/ScrollToTop";
 const UserLayout =lazy(()=> import("./components/Layout/UserLayout"))
 const Home=lazy(()=>import("./pages/Home"))
 const Login= lazy(()=>import("./pages/Login"))
@@ -35,6 +36,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
+      <ScrollToTop />
         <Toaster position="top-right" />
         <Suspense
       fallback={
