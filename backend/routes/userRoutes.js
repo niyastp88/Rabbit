@@ -3,6 +3,7 @@ const {
   registerUser,
   loginUser,
   getUserProfile,
+  verifyEmailOTP,
 } = require("../controller/userController");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -10,6 +11,9 @@ const router = express.Router();
 
 //Register a new user
 router.post("/register", registerUser);
+
+router.post("/verify-otp", verifyEmailOTP);
+
 
 // Authenticate user
 router.post("/login", loginUser);

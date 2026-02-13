@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import defaultHero from "../../assets/rabbit-hero.webp";
 
 const Hero = ({ image }) => {
-  console.log(image)
+  
   return (
     
     <section className="relative">

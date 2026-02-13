@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+
     email: {
       type: String,
       required: true,
@@ -15,28 +16,51 @@ const userSchema = new mongoose.Schema(
       trim: true,
       match: [/.+\@.+\..+/, "Please enter a valid email address"],
     },
+
+    mobile: {
+      type: String,
+      required: false,
+      trim: true,
+    },
+
     password: {
       type: String,
       required: true,
-      minLength: 6,
+      minlength: 8,
+      validate: {
+        validator: function (value) {
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(
+            value
+          );
+        },
+        message:
+          "Password must contain 8 characters including uppercase, lowercase, number and special character",
+      },
     },
+
     role: {
       type: String,
       enum: ["customer", "admin"],
       default: "customer",
     },
+
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    emailOTP: String,
+    emailOTPExpire: Date,
   },
   { timestamps: true }
 );
 
-// Password Hash middleware
+// Password hash
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
-
-// Match User entered password to Hashed password
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
