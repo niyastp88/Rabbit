@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema(
       validate: {
         validator: function (value) {
           return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/.test(
-            value
+            value,
           );
         },
         message:
@@ -44,23 +44,13 @@ const userSchema = new mongoose.Schema(
       default: "customer",
     },
 
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-
     emailOTP: String,
     emailOTPExpire: Date,
+    resetPasswordToken: String,
+    resetPasswordExpire: Date,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
-
-// Password hash
-userSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);

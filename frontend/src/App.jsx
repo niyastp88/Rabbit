@@ -28,6 +28,9 @@ import store from "./redux/store";
 import BrandManagement from "./components/Admin/brandManagemnt";
 import MaterialManagement from "./components/Admin/materialManagement";
 import HomeContentManagement from "./components/Admin/HomeContentManagment";
+import ForgotPassword from "./pages/forgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 
 const App = () => {
   return (
@@ -53,6 +56,10 @@ const App = () => {
             <Route path="/payment-failed" element={<PaymentFailedPage />} />
             <Route path="order/:id" element={<OrderDetailsPage />} />
             <Route path="my-orders" element={<MyOrdersPage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+
           </Route>
           <Route
             path="/admin"

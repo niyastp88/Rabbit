@@ -108,6 +108,14 @@ const Login = () => {
               required
             />
           </div>
+          <div className="flex justify-end mt-1">
+  <Link
+    to="/forgot-password"
+    className="text-sm text-blue-600 hover:underline"
+  >
+    Forgot Password?
+  </Link>
+</div>
 
           <button
             disabled={loading}
@@ -125,6 +133,8 @@ const Login = () => {
           >
             Register
           </Link>
+          
+
         </p>
       </div>
     </div>

@@ -4,6 +4,8 @@ const {
   loginUser,
   getUserProfile,
   verifyEmailOTP,
+  forgotPassword,
+  resetPassword,
 } = require("../controller/userController");
 const { protect } = require("../middleware/authMiddleware");
 
@@ -20,5 +22,9 @@ router.post("/login", loginUser);
 
 //  Get logged-in user's profile (Protected Route)
 router.get("/profile", protect, getUserProfile);
+
+router.post("/forgot-password", forgotPassword);
+router.put("/reset-password/:token", resetPassword);
+
 
 module.exports = router;

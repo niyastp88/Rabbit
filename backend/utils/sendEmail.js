@@ -10,7 +10,7 @@ const sendEmail = async (email, otp) => {
   });
 
   await transporter.sendMail({
-    from: `"Rabbit Store" <${process.env.EMAIL_USER}>`,
+    from: `"ZayanCart" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Email Verification OTP",
     html: `

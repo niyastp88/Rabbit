@@ -2,74 +2,143 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
+const PendingUser = require("../models/PendingUser");
+const bcrypt = require("bcryptjs");
+require("dotenv").config();
+
+
 
 exports.registerUser = async (req, res) => {
   const { name, email, password, mobile } = req.body;
 
   try {
-    let user = await User.findOne({ email });
-    if (user)
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
-    // generate OTP
+    // Strong password check
+    const strongPassword =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    if (!strongPassword.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must be 8+ chars, include uppercase, lowercase, number & special character",
+      });
+    }
+
+    // hash password before temporary save
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    user = new User({
-      name,
-      email,
-      password,
-      mobile,
-      emailOTP: otp,
-      emailOTPExpire: Date.now() + 10 * 60 * 1000,
-    });
+    await PendingUser.findOneAndUpdate(
+      { email },
+      {
+        name,
+        email,
+        password: hashedPassword,
+        mobile,
+        otp,
+        otpExpires: Date.now() + 10 * 60 * 1000, // 10 min expiry
+      },
+      { upsert: true }
+    );
 
-    await user.save();
+    // 📩 Send OTP email
 
-    await sendEmail(email, otp);
+   await sendEmail(email, otp);
 
-    res.status(201).json({
-      message: "OTP sent to email. Please verify.",
-    });
+    res.json({ message: "OTP sent to email" });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
+
 
 exports.verifyEmailOTP = async (req, res) => {
-  const { email, otp } = req.body;
+  try {
+    const { email, otp } = req.body;
 
-  const user = await User.findOne({
-    email,
-    emailOTP: otp,
-    emailOTPExpire: { $gt: Date.now() },
-  });
+    if (!email || !otp) {
+      return res.status(400).json({
+        message: "Email and OTP are required",
+      });
+    }
 
-  if (!user) {
-    return res.status(400).json({ message: "Invalid or expired OTP" });
+    const pendingUser = await PendingUser.findOne({ email });
+
+    if (!pendingUser) {
+      return res.status(400).json({
+        message: "No pending registration found",
+      });
+    }
+
+    if (pendingUser.otp !== otp) {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+
+    if (pendingUser.otpExpires < Date.now()) {
+      return res.status(400).json({
+        message: "OTP expired. Please register again.",
+      });
+    }
+
+    // 🔥 Extra Safety: check again if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      await PendingUser.deleteOne({ email });
+      return res.status(400).json({
+        message: "User already verified. Please login.",
+      });
+    }
+    
+
+    // ✅ Create real user
+    const user = await User.create({
+      name: pendingUser.name,
+      email: pendingUser.email,
+      password: pendingUser.password, // already hashed
+      mobile: pendingUser.mobile,
+    });
+
+    // 🧹 Delete pending record
+    await PendingUser.deleteOne({ email });
+
+    const payload = {
+      user: {
+        id: user._id,
+        role: user.role,
+      },
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "40h",
+    });
+
+    // ✅ Final Response (complete & clean)
+    return res.status(200).json({
+      message: "Email verified successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error("Verify OTP Error:", error);
+    return res.status(500).json({
+      message: "Server error",
+    });
   }
-
-  user.isVerified = true;
-  user.emailOTP = undefined;
-  user.emailOTPExpire = undefined;
-
-  await user.save();
-
-  const payload = { user: { id: user._id, role: user.role } };
-
-  const token = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: "40h",
-  });
-
-  res.json({
-    user: {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-    token,
-  });
 };
+
+
 
 
 exports.loginUser = async (req, res) => {
@@ -82,9 +151,7 @@ exports.loginUser = async (req, res) => {
     const isMatch = await user.matchPassword(password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid Credentials" });
-    if (!user.isVerified) {
-  return res.status(403).json({ message: "Please verify your email first" });
-}
+    
 
     //Create JWT Playload
     const playload = { user: { id: user._id, role: user.role } };
@@ -117,3 +184,98 @@ exports.loginUser = async (req, res) => {
 exports.getUserProfile = async (req, res) => {
   res.json(req.user);
 };
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(200).json({
+        message: "If email exists, reset link sent",
+      });
+    }
+
+    // Generate random token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    // Hash token before saving (security)
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000; // 15 minutes
+
+    await user.save();
+
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    await sendEmail(
+      user.email,
+      `
+        <h2>Password Reset</h2>
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetUrl}">${resetUrl}</a>
+        <p>This link expires in 15 minutes.</p>
+      `
+    );
+
+    res.json({
+      message: "Reset link sent to email",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const strongPassword =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+    if (!strongPassword.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must be 8+ chars, include uppercase, lowercase, number & special character",
+      });
+    }
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Invalid or expired reset token",
+      });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    user.password =hashedPassword; 
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.json({
+      message: "Password reset successful. Please login.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+

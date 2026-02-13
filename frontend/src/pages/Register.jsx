@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { registerUser, verifyOTP } from "../redux/slices/authSlice";
+import { clearError, registerUser, verifyOTP } from "../redux/slices/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { mergeCart } from "../redux/slices/cartSlice";
 
@@ -13,12 +13,15 @@ const Register = () => {
   const [showOTP, setShowOTP] = useState(false);
   const [sendingOTP, setSendingOTP] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [timer, setTimer] = useState(30);
+const [canResend, setCanResend] = useState(false);
+
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, guestId, loading } = useSelector((state) => state.auth);
+  const { user, guestId, loading,error } = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart);
 
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
@@ -35,9 +38,32 @@ const Register = () => {
       }
     }
   }, [user]);
+  useEffect(() => {
+  let interval;
+
+  if (showOTP) {
+    setTimer(30);
+    setCanResend(false);
+
+    interval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }
+
+  return () => clearInterval(interval);
+}, [showOTP]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(clearError());
     setSendingOTP(true);
 
     const result = await dispatch(
@@ -52,10 +78,23 @@ const Register = () => {
   };
 
   const handleVerify = async () => {
+    dispatch(clearError());
     setVerifying(true);
     await dispatch(verifyOTP({ email, otp }));
     setVerifying(false);
   };
+
+  const handleResend = async () => {
+  if (!canResend) return;
+
+  setSendingOTP(true);
+  await dispatch(registerUser({ name, email, password, mobile }));
+  setSendingOTP(false);
+
+  setTimer(30);
+  setCanResend(false);
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -70,6 +109,12 @@ const Register = () => {
             Secure your account with OTP verification
           </p>
         </div>
+        {error && (
+  <div className="mb-4 bg-red-100 text-red-600 p-3 rounded-lg text-sm text-center">
+    {error}
+  </div>
+)}
+
 
         {!showOTP ? (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -80,7 +125,8 @@ const Register = () => {
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
               placeholder="Full Name"
-              required
+              required onInvalid={(e) => e.target.setCustomValidity("Please enter your full name")}
+  onInput={(e) => e.target.setCustomValidity("")}
             />
 
             <input
@@ -97,7 +143,8 @@ const Register = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
               placeholder="Email Address"
-              required
+              required onInvalid={(e) => e.target.setCustomValidity("Please enter vaild email address")}
+  onInput={(e) => e.target.setCustomValidity("")}
             />
 
             <input
@@ -106,7 +153,8 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
               placeholder="Strong Password"
-              required
+              required onInvalid={(e) => e.target.setCustomValidity("Please enter password")}
+  onInput={(e) => e.target.setCustomValidity("")}
             />
 
             <button
@@ -120,36 +168,50 @@ const Register = () => {
           </form>
         ) : (
           /* OTP SECTION */
-          <div className="space-y-5 animate-fadeIn">
-            <div className="bg-gray-50 border rounded-xl p-6 text-center shadow-sm">
-              <h3 className="text-lg font-semibold mb-2">
-                Verify Your Email
-              </h3>
-              <p className="text-sm text-gray-500 mb-4">
-                We've sent a 6-digit OTP to
-                <br />
-                <span className="font-medium text-black">{email}</span>
-              </p>
+          <div className="bg-gray-50 border rounded-xl p-6 text-center shadow-sm">
+  <h3 className="text-lg font-semibold mb-2">
+    Verify Your Email
+  </h3>
 
-              <input
-                type="text"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                maxLength={6}
-                className="w-full text-center tracking-widest text-xl font-semibold px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black"
-                placeholder="Enter OTP"
-              />
+  <p className="text-sm text-gray-500 mb-4">
+    We've sent a 6-digit OTP to
+    <br />
+    <span className="font-medium text-black">{email}</span>
+  </p>
 
-              <button
-                type="button"
-                onClick={handleVerify}
-                disabled={verifying}
-                className="mt-4 w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-60"
-              >
-                {verifying ? "Verifying..." : "Verify & Create Account"}
-              </button>
-            </div>
-          </div>
+  <input
+    type="text"
+    value={otp}
+    onChange={(e) => setOtp(e.target.value)}
+    maxLength={6}
+    className="w-full text-center tracking-widest text-xl font-semibold px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black"
+    placeholder="Enter OTP"
+  />
+
+  <button
+    type="button"
+    onClick={handleVerify}
+    disabled={verifying}
+    className="mt-4 w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-60"
+  >
+    {verifying ? "Verifying..." : "Verify & Create Account"}
+  </button>
+
+  {/* TIMER */}
+  <div className="mt-4 text-sm text-gray-500">
+    {!canResend ? (
+      <p>Resend OTP in <span className="font-semibold">{timer}s</span></p>
+    ) : (
+      <button
+        onClick={handleResend}
+        className="text-blue-600 font-medium hover:underline"
+      >
+        Resend OTP
+      </button>
+    )}
+  </div>
+</div>
+
         )}
 
         <p className="text-sm text-center mt-6">
