@@ -198,6 +198,7 @@ state.total = action.payload.total;
       .addCase(fetchProductDetails.pending, (state) => {
         state.loading = true;
         state.error = null;
+        
       })
       .addCase(fetchProductDetails.fulfilled, (state, action) => {
         state.loading = false;

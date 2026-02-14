@@ -11,6 +11,7 @@ const Checkout = () => {
   const dispatch = useDispatch();
 
   const { cart, loading, error } = useSelector((state) => state.cart);
+  const {  error:checkoutError } = useSelector((state) => state.checkout);
   const { user } = useSelector((state) => state.auth);
 
   const [checkoutId, setCheckoutId] = useState(null);
@@ -75,6 +76,8 @@ const Checkout = () => {
       toast.error("No available products to checkout");
       return;
     }
+    
+
 
     const totalPrice = validItems.reduce(
       (acc, item) => acc + item.price * item.quantity,
@@ -89,6 +92,13 @@ const Checkout = () => {
         totalPrice,
       })
     );
+    if (res.meta.requestStatus === "rejected") {
+    toast.error(res.payload?.message || "Checkout failed", {
+      className:
+        "bg-red-600 text-white border border-red-700 shadow-xl rounded-xl",
+    });
+    return;
+  }
 
     if (res.payload?._id) {
       setCheckoutId(res.payload._id);
@@ -102,6 +112,7 @@ const Checkout = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-7xl mx-auto py-10 px-6">
       {/* LEFT – FORM */}
       <div className="bg-white p-6 rounded-lg">
+        
         <h2 className="text-2xl uppercase mb-6">Checkout</h2>
 
         <form onSubmit={handleCreateCheckout}>
@@ -116,38 +127,38 @@ const Checkout = () => {
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
-              placeholder="First Name"
+              placeholder="First Name" type="text"
               className="p-2 border rounded"
               value={shippingAddress.firstName}
               onChange={(e) =>
                 setShippingAddress({
                   ...shippingAddress,
-                  firstName: e.target.value,
+                  firstName: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
                 })
               }
               required
             />
             <input
-              placeholder="Last Name"
+              placeholder="Last Name" type="text"
               className="p-2 border rounded"
               value={shippingAddress.lastName}
               onChange={(e) =>
                 setShippingAddress({
                   ...shippingAddress,
-                  lastName: e.target.value,
+                  lastName: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
                 })
               }
             />
           </div>
 
           <input
-            placeholder="Address"
+            placeholder="Address" type="text"
             className="w-full p-2 border rounded mb-4"
             value={shippingAddress.address}
             onChange={(e) =>
               setShippingAddress({
                 ...shippingAddress,
-                address: e.target.value,
+                address: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
               })
             }
             required
@@ -155,18 +166,18 @@ const Checkout = () => {
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
-              placeholder="City"
+              placeholder="City" type="text"
               className="p-2 border rounded"
               value={shippingAddress.city}
               onChange={(e) =>
                 setShippingAddress({
                   ...shippingAddress,
-                  city: e.target.value,
+                  city: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
                 })
               }
             />
             <input
-              placeholder="Postal Code"
+              placeholder="Postal Code" type="Number"
               className="p-2 border rounded"
               value={shippingAddress.postalcode}
               onChange={(e) =>
@@ -180,7 +191,7 @@ const Checkout = () => {
           </div>
 
           <input
-            placeholder="Country"
+            placeholder="country"
             className="w-full p-2 border rounded mb-4"
             value={shippingAddress.country}
             onChange={(e) =>
@@ -194,7 +205,7 @@ const Checkout = () => {
 
           <input
             placeholder="Phone"
-            className="w-full p-2 border rounded mb-6"
+            className="w-full p-2 border rounded mb-6" type="Number"
             value={shippingAddress.phone}
             onChange={(e) =>
               setShippingAddress({

@@ -44,6 +44,7 @@ const checkoutSchema = new mongoose.Schema(
       city: { type: String, required: true },
       postalcode: { type: String, required: true },
       country: { type: String, required: true },
+      phone:{type:String,required:true},
     },
     paymentMethod: {
       type: String,

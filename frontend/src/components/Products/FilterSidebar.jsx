@@ -27,7 +27,7 @@ const FilterSidebar = () => {
     minPrice: 0,
     maxPrice: 1000,
   });
-  const [priceRange, setPriceRange] = useState([0, 100]);
+  const [priceRange, setPriceRange] = useState([0, 1000]);
   
   
   const colors = [
@@ -58,7 +58,7 @@ const FilterSidebar = () => {
       minPrice: params.minPrice || 0,
       maxPrice: params.maxPrice || 1000,
     });
-    setPriceRange([0, params.maxPrice || 100]);
+    setPriceRange([0, params.maxPrice || 1000]);
   }, [searchParams]);
 
   const handleFilterChange = (e) => {
@@ -211,14 +211,14 @@ const FilterSidebar = () => {
           type="range"
           name="priceRange"
           min={0}
-          max={100}
+          max={1000}
           value={priceRange[1]}
           onChange={handlePriceChange}
           className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
         />
         <div className="flex justify-between text-gray-600 mt-2">
-          <span>$0</span>
-          <span>${priceRange[1]}</span>
+          <span>₹0</span>
+          <span>₹{priceRange[1]}</span>
         </div>
       </div>
     </div>

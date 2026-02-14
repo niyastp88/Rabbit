@@ -21,7 +21,31 @@ const ProductGrid = ({ products, loading, error }) => {
     }
   }, [dispatch, user]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {Array.from({ length: 8 }).map((_, index) => (
+        <div
+          key={index}
+          className="bg-white p-4 rounded-lg animate-pulse"
+        >
+          {/* Image skeleton */}
+          <div className="w-full h-96 bg-gray-200 rounded-lg mb-4"></div>
+
+          {/* Title skeleton */}
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+
+          {/* Rating skeleton */}
+          <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
+
+          {/* Price skeleton */}
+          <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
   if (error) return <p>Error: {error}</p>;
 
   const handleWishlist = async (e, productId, isWishlisted) => {
@@ -41,9 +65,26 @@ const ProductGrid = ({ products, loading, error }) => {
       toast.error("Wishlist action failed");
     }
   };
-  if(products.length===0){
-    return <h3>No Products Found</h3>
-  }
+  if (!loading && products.length === 0) {
+  return (
+    <div className="col-span-full flex flex-col items-center justify-center py-24 text-center">
+      
+      {/* Icon */}
+      <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+        <span className="text-4xl">🛍️</span>
+      </div>
+
+      {/* Title */}
+      <h3 className="text-2xl font-semibold text-gray-800 mb-2">
+        No Products Found
+      </h3>
+
+      
+
+    </div>
+  );
+}
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {products.map((product) => {

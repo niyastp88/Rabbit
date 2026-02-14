@@ -97,7 +97,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
       onClick={handlePayment}
       className="w-full bg-black text-white py-3 rounded"
     >
-      Pay ₹ {amount}
+      Pay With Razorpay ₹ {amount}
     </button>
   );
 };

@@ -32,7 +32,7 @@ const Login = () => {
         await dispatch(mergeCart({ guestId })).unwrap();
       }
 
-      //  ALWAYS fetch fresh cart
+      //   fetch fresh cart
       await dispatch(
         fetchCart({
           userId: user._id,
@@ -40,7 +40,7 @@ const Login = () => {
         })
       ).unwrap();
 
-      // 3️⃣ redirect
+      
       
     } catch (err) {
       console.error("Cart sync failed", err);

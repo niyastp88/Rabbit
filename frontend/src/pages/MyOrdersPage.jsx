@@ -15,7 +15,30 @@ const MyOrdersPage = () => {
     dispatch(fetchUserOrders());
   }, [dispatch]);
 
-  if (loading) return <p>Loadning...</p>;
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
+        <h2 className="text-xl sm:text-2xl font-bold mb-6">My Orders</h2>
+
+        <div className="animate-pulse space-y-4">
+          {[1, 2, 3, 4].map((item) => (
+            <div
+              key={item}
+              className="grid grid-cols-7 gap-4 items-center bg-white p-4 rounded-lg"
+            >
+              <div className="h-10 w-10 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded col-span-2"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-6 w-16 bg-gray-200 rounded-full"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <p>Error: {error}</p>;
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6">
@@ -80,10 +103,36 @@ const MyOrdersPage = () => {
             ))
           ) : (
             <tr>
-              <td colSpan={7} className="py-4 px-4 text-center text-gray-500">
-                You have no oredrs
-              </td>
-            </tr>
+    <td colSpan={7}>
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        
+        {/* Icon */}
+        <div className="text-6xl mb-4 opacity-70">
+          🛍️
+        </div>
+
+        {/* Heading */}
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+          No Orders Yet
+        </h3>
+
+        {/* Subtext */}
+        <p className="text-gray-500 mb-6 max-w-md">
+          Looks like you haven't placed any orders yet. 
+          Start shopping to see your orders appear here.
+        </p>
+
+        {/* Button */}
+        <button
+          onClick={() => navigate("/")}
+          className="bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition"
+        >
+          Start Shopping
+        </button>
+
+      </div>
+    </td>
+  </tr>
           )}
         </tbody>
       </table>

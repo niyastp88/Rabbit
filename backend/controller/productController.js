@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
 
+
 exports.createProduct = async (req, res) => {
   try {
     const product = new Product({
@@ -222,6 +223,7 @@ exports.getProducts = async (req, res) => {
       .sort(sort)
       .skip(skip)
       .limit(limitNum);
+      
 
     res.json({
       products,
@@ -239,6 +241,7 @@ exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
+      
       res.json(product);
     } else {
       res.status(404).json({ message: "Product Not Found" });

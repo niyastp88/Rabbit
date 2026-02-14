@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./redux/store";
 import ScrollToTop from "./components/Common/ScrollToTop";
+import ReturnRequests from "./components/Admin/ReturnRequests";
 const UserLayout =lazy(()=> import("./components/Layout/UserLayout"))
 const Home=lazy(()=>import("./pages/Home"))
 const Login= lazy(()=>import("./pages/Login"))
@@ -37,7 +38,7 @@ const App = () => {
     <Provider store={store}>
       <BrowserRouter>
       <ScrollToTop />
-        <Toaster position="top-right" />
+        <Toaster position="top-right" richColors />
         <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center text-lg font-semibold">
@@ -66,6 +67,7 @@ const App = () => {
             <Route path="my-orders" element={<MyOrdersPage />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
+            
 
 
           </Route>
@@ -90,7 +92,9 @@ const App = () => {
               path="/admin/home-content"
               element={<HomeContentManagement />}
             />
+            <Route path="/admin/returnrequests" element={<ReturnRequests />} />
           </Route>
+          
         </Routes>
         </Suspense>
       </BrowserRouter>

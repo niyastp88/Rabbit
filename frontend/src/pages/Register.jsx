@@ -103,7 +103,7 @@ const [canResend, setCanResend] = useState(false);
         {/* Header */}
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold tracking-tight">
-            Register with Email Verification
+            Create New Account
           </h2>
           <p className="text-sm text-gray-500 mt-2">
             Secure your account with OTP verification
@@ -122,7 +122,7 @@ const [canResend, setCanResend] = useState(false);
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
               placeholder="Full Name"
               required onInvalid={(e) => e.target.setCustomValidity("Please enter your full name")}
@@ -130,7 +130,7 @@ const [canResend, setCanResend] = useState(false);
             />
 
             <input
-              type="text"
+              type="Number"
               value={mobile}
               onChange={(e) => setMobile(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
@@ -152,7 +152,7 @@ const [canResend, setCanResend] = useState(false);
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
-              placeholder="Strong Password"
+              placeholder="Password"
               required onInvalid={(e) => e.target.setCustomValidity("Please enter password")}
   onInput={(e) => e.target.setCustomValidity("")}
             />

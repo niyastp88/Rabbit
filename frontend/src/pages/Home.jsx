@@ -12,24 +12,15 @@ import axios from "axios";
 
 const Home = () => {
   const disPatch = useDispatch();
-  const { products, loading, error } = useSelector((state) => state.products);
   const [bestSellerProduct, setBestSellerProduct] = useState(null);
   const [homeContent, setHomeContent] = useState(null);
 
   useEffect(() => {
-    // Fetch products for a specific collection
-    disPatch(
-      fetchProductByFilters({
-        gender: "Women",
-        category: "Bottom Wear",
-        limit: 8,
-      })
-    );
     // Fetch best seller product
     const fetchBestSeller = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`
+          `${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`,
         );
         setBestSellerProduct(response.data);
       } catch (error) {
@@ -37,15 +28,15 @@ const Home = () => {
       }
     };
     const fetchHomeContent = async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/home-content`
-      );
-      setHomeContent(res.data);
-    } catch (err) {
-      console.error("Home content fetch error", err);
-    }
-  };
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/home-content`,
+        );
+        setHomeContent(res.data);
+      } catch (err) {
+        console.error("Home content fetch error", err);
+      }
+    };
     fetchBestSeller();
     fetchHomeContent();
   }, [disPatch]);
@@ -53,22 +44,20 @@ const Home = () => {
   return (
     <div>
       <Hero image={homeContent?.heroImage} />
-
+ 
       <GenderCollectionSection
-  menImage={homeContent?.menCollectionImage}
-  womenImage={homeContent?.womenCollectionImage}
-/>
+        menImage={homeContent?.menCollectionImage}
+        womenImage={homeContent?.womenCollectionImage}
+      />
 
       <NewArrivals />
-      {/* Best Seller */}
       <h2 className="text-3xl text-center font-bold mb-4">Best Seller</h2>
       {bestSellerProduct ? (
         <ProductDetails productId={bestSellerProduct._id} home={true} />
       ) : (
         <p className="text-center">Loading best seller product...</p>
       )}
-      
-      
+
       <FeaturesSection />
     </div>
   );

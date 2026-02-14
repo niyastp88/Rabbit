@@ -8,8 +8,49 @@ const crypto = require("crypto");
 exports.createCheckout = async (req, res) => {
   const { checkoutItems, shippingAddress, paymentMethod, totalPrice } =
     req.body;
+    
   if (!checkoutItems) {
     return res.status(400).json({ message: "no items in checkout" });
+  }
+  if (!shippingAddress) {
+    return res.status(400).json({ message: "Shipping address required" });
+  }
+  const {
+    firstName,
+    lastName,
+    address,
+    city,
+    postalcode,
+    country,
+    phone,
+  } = shippingAddress;
+  
+  if (!firstName?.trim())
+    return res.status(400).json({ message: "First name is required" });
+
+  if (!address?.trim())
+    return res.status(400).json({ message: "Address is required" });
+
+  if (!city?.trim())
+    return res.status(400).json({ message: "City is required" });
+
+  if (!country?.trim())
+    return res.status(400).json({ message: "Country is required" });
+
+  
+  const phoneRegex = /^[0-9]{10}$/;
+  if (!phoneRegex.test(phone)) {
+    return res.status(400).json({
+      message: "Phone number must be exactly 10 digits",
+    });
+  }
+
+  
+  const postalRegex = /^[0-9]{6}$/;
+  if (!postalRegex.test(postalcode)) {
+    return res.status(400).json({
+      message: "Postal code must be exactly 6 digits",
+    });
   }
   try {
     // Create a new checkout session

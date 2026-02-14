@@ -106,8 +106,25 @@ const ProductDetails = ({ productId, home }) => {
     isOutOfStock || quantity > stock || quantity > 5 || isButtonDisabled;
 
   /* ================= UI STATES ================= */
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error}</p>;
+  
+  if (loading) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="flex flex-col items-center gap-4">
+        
+        {/* Spinner */}
+        <div className="w-12 h-12 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+
+        {/* Text */}
+        <p className="text-gray-600 text-lg font-medium">
+          Loading Product...
+        </p>
+
+      </div>
+    </div>
+  );
+}
+
 
   return (
     <div className="p-6">
