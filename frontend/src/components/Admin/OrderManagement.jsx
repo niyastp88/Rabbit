@@ -33,7 +33,49 @@ const OrderManagement = () => {
     dispatch(updateOrderStatus({ id: orderId, status }));
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) {
+  return (
+    <div className="max-w-7xl mx-auto p-6">
+
+      {/* Header Skeleton */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="h-8 w-48 bg-gray-200 rounded animate-pulse"></div>
+        <div className="h-10 w-40 bg-gray-200 rounded animate-pulse"></div>
+      </div>
+
+      {/* Table Skeleton */}
+      <div className="overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
+        <div className="animate-pulse space-y-4">
+
+          {/* Header Row */}
+          <div className="grid grid-cols-5 gap-4 mb-4">
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
+          </div>
+
+          {/* Order Rows */}
+          {[1,2,3,4,5,6].map((row) => (
+            <div
+              key={row}
+              className="grid grid-cols-5 gap-4 items-center"
+            >
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-8 bg-gray-200 rounded"></div>
+              <div className="h-8 w-28 bg-gray-200 rounded"></div>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  );
+}
+
   if (error) return <p>Error: {error}</p>;
   return (
     <div className="max-w-7xl mx-auto shadow-md sm:rounded-lg">

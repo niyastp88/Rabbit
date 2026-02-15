@@ -20,6 +20,8 @@ const AddProductPage = () => {
 
   useEffect(() => {
   dispatch(fetchCategories());
+  dispatch(fetchBrands());
+  dispatch(fetchMaterials());
 }, [dispatch])
 
   const [uploading, setUploading] = useState(false);

@@ -60,7 +60,40 @@ const UserManagement = () => {
   return (
     <div className="max-w-7xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6">User Management</h2>
-      {loading && <p>Loading...</p>}
+      {loading && <div className="space-y-8 animate-pulse">
+
+    {/* 🔹 Add User Form Skeleton */}
+    <div className="p-6 rounded-lg border bg-white">
+      <div className="h-6 w-40 bg-gray-200 rounded mb-6"></div>
+
+      {[1,2,3,4].map((item) => (
+        <div key={item} className="mb-4">
+          <div className="h-4 w-24 bg-gray-200 rounded mb-2"></div>
+          <div className="h-10 w-full bg-gray-200 rounded"></div>
+        </div>
+      ))}
+
+      <div className="h-10 w-32 bg-gray-200 rounded mt-4"></div>
+    </div>
+
+    {/* 🔹 Table Skeleton */}
+    <div className="overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
+      <div className="space-y-4">
+        {[1,2,3,4,5].map((row) => (
+          <div
+            key={row}
+            className="grid grid-cols-4 gap-4 items-center border-b pb-4"
+          >
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded"></div>
+            <div className="h-8 bg-gray-200 rounded"></div>
+            <div className="h-8 bg-gray-200 rounded"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+  </div>}
       {error && <p>Error:{error}</p>}
       {/* Add New User Form */}
       <div className="p-6 rounded-lg mb-6">

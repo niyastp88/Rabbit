@@ -8,8 +8,6 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 require("dotenv").config();
 
-
-
 exports.registerUser = async (req, res) => {
   const { name, email, password, mobile } = req.body;
 
@@ -45,19 +43,18 @@ exports.registerUser = async (req, res) => {
         otp,
         otpExpires: Date.now() + 10 * 60 * 1000, // 10 min expiry
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     // 📩 Send OTP email
 
-   await sendEmail(email, otp);
+    await sendEmail(email, otp);
 
     res.json({ message: "OTP sent to email" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 exports.verifyEmailOTP = async (req, res) => {
   try {
@@ -97,7 +94,6 @@ exports.verifyEmailOTP = async (req, res) => {
         message: "User already verified. Please login.",
       });
     }
-    
 
     // ✅ Create real user
     const user = await User.create({
@@ -140,9 +136,6 @@ exports.verifyEmailOTP = async (req, res) => {
   }
 };
 
-
-
-
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -153,7 +146,6 @@ exports.loginUser = async (req, res) => {
     const isMatch = await user.matchPassword(password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid Credentials" });
-    
 
     //Create JWT Playload
     const playload = { user: { id: user._id, role: user.role } };
@@ -165,7 +157,7 @@ exports.loginUser = async (req, res) => {
       { expiresIn: "40h" },
       (err, token) => {
         if (err) throw err;
-        console.log(token);
+
         res.json({
           user: {
             _id: user._id,
@@ -222,7 +214,7 @@ exports.forgotPassword = async (req, res) => {
         <p>Click the link below to reset your password:</p>
         <a href="${resetUrl}">${resetUrl}</a>
         <p>This link expires in 15 minutes.</p>
-      `
+      `,
     );
 
     res.json({
@@ -249,10 +241,7 @@ exports.resetPassword = async (req, res) => {
       });
     }
 
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     const user = await User.findOne({
       resetPasswordToken: hashedToken,
@@ -266,7 +255,7 @@ exports.resetPassword = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    user.password =hashedPassword; 
+    user.password = hashedPassword;
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
 
@@ -302,8 +291,7 @@ exports.googleAuth = async (req, res) => {
       user = await User.create({
         name,
         email,
-        googleId: sub
-        
+        googleId: sub,
       });
     }
 
@@ -329,4 +317,3 @@ exports.googleAuth = async (req, res) => {
     res.status(500).json({ message: "Google login failed" });
   }
 };
-

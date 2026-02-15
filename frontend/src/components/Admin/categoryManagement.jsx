@@ -61,7 +61,22 @@ const CategoryManagement = () => {
 
       {/* List Categories */}
       {loading ? (
-        <p>Loading...</p>
+        <div className="space-y-4 animate-pulse">
+
+    
+
+    {/* List Skeleton */}
+    {[1,2,3,4,5].map((item) => (
+      <div
+        key={item}
+        className="flex justify-between items-center border p-3 rounded"
+      >
+        <div className="h-4 w-40 bg-gray-200 rounded"></div>
+        <div className="h-8 w-20 bg-gray-200 rounded"></div>
+      </div>
+    ))}
+
+  </div>
       ) : (
         <ul className="space-y-2">
           {categories.map((cat) => (

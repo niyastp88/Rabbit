@@ -32,7 +32,25 @@ const AdminHomePage = () => {
       <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
 
       {productsLoading || ordersLoading ? (
-        <p>Loading...</p>
+        <div className="space-y-8">
+    
+    {/* Top Stats Skeleton */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {[1, 2, 3].map((item) => (
+        <div
+          key={item}
+          className="p-6 bg-white rounded-xl shadow animate-pulse"
+        >
+          <div className="h-5 bg-gray-200 rounded w-1/2 mb-4"></div>
+          <div className="h-8 bg-gray-300 rounded w-1/3"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/4 mt-4"></div>
+        </div>
+      ))}
+    </div>
+
+    
+
+  </div>
       ) : productsError ? (
         <p className="text-red-500">Error fetching products: {productsError}</p>
       ) : ordersError ? (
