@@ -30,7 +30,7 @@ const EditProductPage = () => {
     description: "",
     price: "",
     countInStock: "",
-    sku: "",
+    
     category: "",
     brand: "",
     sizes: [],
@@ -99,6 +99,9 @@ const EditProductPage = () => {
       <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
 
       <form onSubmit={handleSubmit}>
+        <label className="block font-semibold mb-2">
+    Name
+  </label>
         <input
           className="w-full p-2 border mb-4"
           name="name"
@@ -106,6 +109,10 @@ const EditProductPage = () => {
           onChange={handleChange}
           required
         />
+
+        <label className="block font-semibold mb-2">
+    Description
+  </label>
 
         <textarea
           className="w-full p-2 border mb-4"
@@ -115,21 +122,33 @@ const EditProductPage = () => {
           required
         />
 
+        <label className="block font-semibold mb-2">
+    Price
+  </label>
+
         <input
           className="w-full p-2 border mb-4"
           type="number"
           name="price"
           value={productData.price}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
+
+        <label className="block font-semibold mb-2">
+    Stock
+  </label>
 
         <input
           className="w-full p-2 border mb-4"
           type="number"
           name="countInStock"
           value={productData.countInStock}
-          onChange={handleChange}
+          onChange={handleChange} required
         />
+
+        <label className="block font-semibold mb-2">
+    Category
+  </label>
 
         {/* Category */}
         <select
@@ -147,6 +166,9 @@ const EditProductPage = () => {
         </select>
 
         {/* Brand */}
+        <label className="block font-semibold mb-2">
+    Brand
+  </label>
         <select
           name="brand"
           value={productData.brand}
@@ -162,6 +184,9 @@ const EditProductPage = () => {
         </select>
 
         {/* Material */}
+        <label className="block font-semibold mb-2">
+    Material
+  </label>
         <select
           name="material"
           value={productData.material}
@@ -175,8 +200,25 @@ const EditProductPage = () => {
             </option>
           ))}
         </select>
+        <div className="mb-4">
+          <label className="block font-semibold mb-2">Gender</label>
+          <select
+            name="gender"
+            value={productData.gender}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select Gender</option>
+            <option value="Men">Men</option>
+            <option value="Women">Women</option>
+            <option value="Unisex">Unisex</option>
+          </select>
+        </div>
 
         {/* Sizes */}
+        <label className="block font-semibold mb-2">
+    Sizes
+  </label>
         <input
           className="w-full p-2 border mb-4"
           value={productData.sizes.join(",")}
@@ -185,10 +227,13 @@ const EditProductPage = () => {
               ...productData,
               sizes: e.target.value.split(",").map((s) => s.trim()),
             })
-          }
+          } required
         />
 
         {/* Colors */}
+        <label className="block font-semibold mb-2">
+    Colors
+  </label>
         <input
           className="w-full p-2 border mb-4"
           value={productData.colors.join(",")}
@@ -197,7 +242,7 @@ const EditProductPage = () => {
               ...productData,
               colors: e.target.value.split(",").map((c) => c.trim()),
             })
-          }
+          } required
         />
 
         {/* Image Uploads */}

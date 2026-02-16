@@ -98,7 +98,7 @@ const UserManagement = () => {
     </div>
 
   </div>}
-      {error && <p>Error:{error}</p>}
+      {error && <p className="text-red-500">{error}</p>}
       {/* Add New User Form */}
       <div className="p-6 rounded-lg mb-6">
         <h3 className="text-lg font-bold mb-4">Add New User</h3>
@@ -109,8 +109,12 @@ const UserManagement = () => {
               type="text"
               name="name"
               value={formData.name}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
+              onChange={handleChange} onKeyDown={(e) => {
+  if (!/^[a-zA-Z\s]$/.test(e.key) && e.key !== "Backspace") {
+    e.preventDefault();
+  }
+}}
+              className="w-full p-2 border rounded" required
             />
           </div>
           <div className="mb-4">
@@ -120,7 +124,7 @@ const UserManagement = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded" required
             />
           </div>
           <div className="mb-4">
@@ -130,7 +134,7 @@ const UserManagement = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded" required
             />
           </div>
           <div className="mb-4">

@@ -5,6 +5,7 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 import ScrollToTop from "./components/Common/ScrollToTop";
 import ReturnRequests from "./components/Admin/ReturnRequests";
+import PageLoader from "./components/Common/PageLoader";
 const UserLayout =lazy(()=> import("./components/Layout/UserLayout"))
 const Home=lazy(()=>import("./pages/Home"))
 const Login= lazy(()=>import("./pages/Login"))
@@ -40,10 +41,8 @@ const App = () => {
       <ScrollToTop />
         <Toaster position="top-right" richColors />
         <Suspense
-      fallback={
-        <div className="min-h-screen flex items-center justify-center text-lg font-semibold">
-          Loading...
-        </div>
+      fallback={<PageLoader />
+        
       }
     >
         <Routes>

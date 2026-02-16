@@ -33,6 +33,12 @@ exports.createCheckout = async (req, res) => {
 
   if (!city?.trim())
     return res.status(400).json({ message: "City is required" });
+  const postalRegex = /^[0-9]{6}$/;
+  if (!postalRegex.test(postalcode)) {
+    return res.status(400).json({
+      message: "Postal code must be exactly 6 digits",
+    });
+  }
 
   if (!state?.trim())
     return res.status(400).json({ message: "State is required" });
@@ -46,12 +52,7 @@ exports.createCheckout = async (req, res) => {
   }
 
   
-  const postalRegex = /^[0-9]{6}$/;
-  if (!postalRegex.test(postalcode)) {
-    return res.status(400).json({
-      message: "Postal code must be exactly 6 digits",
-    });
-  }
+  
   try {
     // Create a new checkout session
     const newCheckout = await Checkout.create({

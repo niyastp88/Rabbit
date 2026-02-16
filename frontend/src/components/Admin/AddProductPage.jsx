@@ -30,21 +30,18 @@ const AddProductPage = () => {
     name: "",
     description: "",
     price: "",
-    discountPrice: 0,
+    
     countInStock: "",
-    sku: "",
+    
     category: "",
     brand: "",
     sizes: [],
     colors: [],
-    collections: "",
+    
     material: "",
     gender: "",
     images: [],
-    isFeatured: false,
-    isPublished: true,
-    tags: [],
-    weight: "",
+    
   });
 
   const handleChange = (e) => {
@@ -126,6 +123,9 @@ const AddProductPage = () => {
 
       <form onSubmit={handleSubmit}>
         {/* Name */}
+        <label className="block font-semibold mb-2">
+    Product Name
+  </label>
         <input
           className="w-full p-2 border mb-4"
           name="name"
@@ -136,6 +136,9 @@ const AddProductPage = () => {
         />
 
         {/* Description */}
+        <label className="block font-semibold mb-2">
+    Description
+  </label>
         <textarea
           className="w-full p-2 border mb-4"
           name="description"
@@ -146,6 +149,9 @@ const AddProductPage = () => {
         />
 
         {/* Price */}
+        <label className="block font-semibold mb-2">
+    Price
+  </label>
         <input
           className="w-full p-2 border mb-4"
           type="number"
@@ -156,6 +162,9 @@ const AddProductPage = () => {
         />
 
         {/* Stock */}
+        <label className="block font-semibold mb-2">
+    Stock
+  </label>
         <input
           className="w-full p-2 border mb-4"
           type="number"
@@ -245,6 +254,9 @@ const AddProductPage = () => {
         
 
         {/* Sizes */}
+        <label className="block font-semibold mb-2">
+    Sizes
+  </label>
         <input
           className="w-full p-2 border mb-4"
           placeholder="Sizes (XS,S,M,L)"
@@ -258,6 +270,9 @@ const AddProductPage = () => {
         />
 
         {/* Colors */}
+        <label className="block font-semibold mb-2">
+    Colors
+  </label>
         <input
           className="w-full p-2 border mb-4"
           placeholder="Colors (Red,Blue)"

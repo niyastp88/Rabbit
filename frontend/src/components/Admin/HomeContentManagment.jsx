@@ -98,7 +98,8 @@ const HomeContentManagement = () => {
           <img
             src={content.heroImage}
             alt="Hero"
-            className="w-full h-60 object-cover rounded mb-2"
+            className="w-64 h-40 object-cover rounded-lg border shadow-sm mb-3"
+
           />
         )}
         <input
@@ -118,7 +119,8 @@ const HomeContentManagement = () => {
           <img
             src={content.menCollectionImage}
             alt="Men"
-            className="w-full h-60 object-cover rounded mb-2"
+            className="w-64 h-40 object-cover rounded-lg border shadow-sm mb-3"
+
           />
         )}
         <input
@@ -138,7 +140,8 @@ const HomeContentManagement = () => {
           <img
             src={content.womenCollectionImage}
             alt="Women"
-            className="w-full h-60 object-cover rounded mb-2"
+            className="w-64 h-40 object-cover rounded-lg border shadow-sm mb-3"
+
           />
         )}
         <input

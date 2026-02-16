@@ -136,7 +136,7 @@ const Checkout = () => {
                   firstname: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
                 })
               }
-              required
+              
             />
             <input
               placeholder="Last Name" type="text"
@@ -161,7 +161,7 @@ const Checkout = () => {
                 address: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
               })
             }
-            required
+            
           />
 
           <div className="grid grid-cols-2 gap-4 mb-4">
@@ -186,7 +186,7 @@ const Checkout = () => {
                   postalcode: e.target.value,
                 })
               }
-              required
+              
             />
           </div>
 
@@ -200,7 +200,7 @@ const Checkout = () => {
                 state: e.target.value,
               })
             }
-            required
+            
           />
 
           <input
@@ -213,7 +213,7 @@ const Checkout = () => {
                 phone: e.target.value,
               })
             }
-            required
+            
           />
 
           {!checkoutId ? (

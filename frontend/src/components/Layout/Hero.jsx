@@ -3,9 +3,7 @@ import { Link } from "react-router";
 import defaultHero from "../../assets/rabbit-hero.webp";
 
 const Hero = ({ image }) => {
-  
   return (
-    
     <section className="relative">
       <img
         src={image || defaultHero}
@@ -15,19 +13,26 @@ const Hero = ({ image }) => {
 
       <div className="absolute inset-0 bg-black/5 flex items-center justify-center">
         <div className="text-center text-white p-6">
-          <h1 className="text-4xl md:text-9xl font-bold tracking-tighter uppercase mb-4">
-            Vacation
-            <br />
-            Ready
-          </h1>
-
-          <p className="text-sm tracking-tighter md:text-lg mb-6">
-            Explore our vacation-ready outfits with fast worldwide shipping
-          </p>
-
           <Link
             to="/collections/all"
-            className="bg-white text-gray-950 px-6 py-2 rounded-sm text-lg"
+            className="
+    inline-block
+    bg-green-500
+    hover:bg-green-600
+    text-white
+    font-semibold
+    px-8
+    py-3
+    text-lg
+    rounded-full
+    shadow-lg
+    hover:shadow-2xl
+    transition-all
+    duration-300
+    transform
+    hover:scale-105
+    backdrop-blur-sm
+  "
           >
             Shop Now
           </Link>
