@@ -36,21 +36,32 @@ export const addUser = createAsyncThunk(
 );
 
 // Update user info
+
 export const updateUser = createAsyncThunk(
   "admin/updateUser",
-  async ({ id, name, email, role }) => {
-    const response = await axios.put(
-      `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${id}`,
-      { name, email, role },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-        },
-      }
-    );
-    return response.data.user;
+  async ({ id, role, isBlocked }, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("userToken");
+
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${id}`,
+        { role, isBlocked },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Update failed" }
+      );
+    }
   }
 );
+
 
 // Delete a user
 export const deleteUser = createAsyncThunk("admin/deleteUser", async (id) => {
@@ -64,6 +75,8 @@ export const deleteUser = createAsyncThunk("admin/deleteUser", async (id) => {
   );
   return id;
 });
+
+
 
 const adminSlice = createSlice({
   name: "admin",
@@ -86,15 +99,7 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(updateUser.fulfilled, (state, action) => {
-        const updateUser = action.payload;
-        const userIndex = state.users.findIndex(
-          (user) => user._id === updateUser._id
-        );
-        if (userIndex !== -1) {
-          state.users[userIndex] = updateUser;
-        }
-      })
+      
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter((user) => user._id !== action.payload);
       })
@@ -109,7 +114,20 @@ const adminSlice = createSlice({
       .addCase(addUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
-      });
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+  const index = state.users.findIndex(
+    (user) => user._id === action.payload._id
+  );
+
+  if (index !== -1) {
+    state.users[index] = action.payload;
+  }
+})
+.addCase(updateUser.rejected, (state, action) => {
+  state.error = action.payload?.message;
+});
+
   },
 });
 

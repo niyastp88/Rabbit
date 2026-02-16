@@ -97,6 +97,7 @@ export const googleLogin = createAsyncThunk(
 
 
 
+
 // slice
 const authSlice = createSlice({
   name: "auth",
@@ -157,6 +158,7 @@ const authSlice = createSlice({
 .addCase(googleLogin.fulfilled, (state, action) => {
   state.user = action.payload;
 });
+
 
 
   },

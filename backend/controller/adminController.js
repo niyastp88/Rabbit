@@ -61,3 +61,29 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+exports.updateUserByAdmin = async (req, res) => {
+  try {
+    const { role, isBlocked } = req.body;
+
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (role !== undefined) {
+      user.role = role;
+    }
+
+    if (isBlocked !== undefined) {
+      user.isBlocked = isBlocked;
+    }
+
+    await user.save();
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};

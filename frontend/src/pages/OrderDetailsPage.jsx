@@ -7,6 +7,7 @@ import {
   clearReturnStatus,
 } from "../redux/slices/orderSlice";
 import ProductReviewForm from "../components/Reviews/ProductReviewForm";
+import { updateOrderStatus } from "../redux/slices/adminOrderSlice";
 
 const OrderDetailsPage = () => {
   const { id } = useParams();
@@ -76,6 +77,22 @@ const OrderDetailsPage = () => {
       })
     );
   };
+  const handleCancelOrder = async () => {
+  if (!window.confirm("Are you sure you want to cancel this order?")) return;
+
+  try {
+    await dispatch(
+      updateOrderStatus({
+        id: orderDetails._id,
+        status: "Cancelled",
+      })
+    ).unwrap();
+
+    dispatch(fetchOrderDetails(id)); // refresh page
+  } catch (err) {
+    alert("Failed to cancel order");
+  }
+};
 
   if (loading) {
   return (
@@ -139,9 +156,31 @@ const OrderDetailsPage = () => {
                 {formatDate(orderDetails.createdAt)}
               </p>
             </div>
-            <span className="px-3 py-1 rounded bg-green-100 text-green-700">
-              {orderDetails.status}
-            </span>
+            <div className="flex items-center gap-3">
+  <span
+    className={`px-3 py-1 rounded text-sm font-medium
+      ${
+        orderDetails.status === "Cancelled"
+          ? "bg-red-100 text-red-700"
+          : orderDetails.status === "Processing"
+          ? "bg-yellow-100 text-yellow-700"
+          : "bg-green-100 text-green-700"
+      }`}
+  >
+    {orderDetails.status}
+  </span>
+
+  {/* ✅ Show Cancel Button ONLY if Processing */}
+  {orderDetails.status === "Processing" && (
+    <button
+      onClick={() => handleCancelOrder()}
+      className="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700"
+    >
+      Cancel Order
+    </button>
+  )}
+</div>
+
           </div>
 
           {/* PRODUCTS */}

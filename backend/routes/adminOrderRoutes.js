@@ -14,7 +14,7 @@ router.get("/", protect, admin, getAllOrders);
 
 // Update order status
 
-router.put("/:id", protect, admin, updateOrderStatus);
+router.put("/:id", protect,updateOrderStatus);
 
 // Delete an order
 

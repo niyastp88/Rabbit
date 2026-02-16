@@ -143,9 +143,20 @@ exports.loginUser = async (req, res) => {
     // Find the user by email
     let user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid Credentials" });
+    if (user.googleId && !user.password) {
+  return res.status(400).json({
+    message: "Please login using Google",
+  });
+}
     const isMatch = await user.matchPassword(password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid Credentials" });
+    if (user.isBlocked) {
+  return res.status(403).json({
+    message: "Your account is blocked by admin",
+  });
+}
+
 
     //Create JWT Playload
     const playload = { user: { id: user._id, role: user.role } };
@@ -317,3 +328,5 @@ exports.googleAuth = async (req, res) => {
     res.status(500).json({ message: "Google login failed" });
   }
 };
+
+
