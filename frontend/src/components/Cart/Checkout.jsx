@@ -19,12 +19,12 @@ const Checkout = () => {
   const [checkingStock, setCheckingStock] = useState(true);
 
   const [shippingAddress, setShippingAddress] = useState({
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     address: "",
     city: "",
     postalcode: "",
-    country: "",
+    state: "",
     phone: "",
   });
 
@@ -129,11 +129,11 @@ const Checkout = () => {
             <input
               placeholder="First Name" type="text"
               className="p-2 border rounded"
-              value={shippingAddress.firstName}
+              value={shippingAddress.firstname}
               onChange={(e) =>
                 setShippingAddress({
                   ...shippingAddress,
-                  firstName: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
+                  firstname: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
                 })
               }
               required
@@ -141,11 +141,11 @@ const Checkout = () => {
             <input
               placeholder="Last Name" type="text"
               className="p-2 border rounded"
-              value={shippingAddress.lastName}
+              value={shippingAddress.lastname}
               onChange={(e) =>
                 setShippingAddress({
                   ...shippingAddress,
-                  lastName: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
+                  lastname: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
                 })
               }
             />
@@ -191,13 +191,13 @@ const Checkout = () => {
           </div>
 
           <input
-            placeholder="country"
+            placeholder="state"
             className="w-full p-2 border rounded mb-4"
-            value={shippingAddress.country}
+            value={shippingAddress.state}
             onChange={(e) =>
               setShippingAddress({
                 ...shippingAddress,
-                country: e.target.value,
+                state: e.target.value,
               })
             }
             required

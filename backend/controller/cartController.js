@@ -144,18 +144,28 @@ exports.removeFromCart = async (req, res) => {
 
 exports.getCartByUser = async (req, res) => {
   const { userId, guestId } = req.query;
+
   try {
-    const cart = await getCart(userId, guestId);
-    if (cart) {
-      res.json(cart);
-    } else {
-      res.status(404).json({ message: "Cart not found" });
+    let cart = await getCart(userId, guestId);
+
+    
+    if (!cart) {
+      cart = await Cart.create({
+        user: userId || undefined,
+        guestId: guestId || undefined,
+        products: [],
+        totalPrice: 0,
+      });
     }
+
+    return res.status(200).json(cart);
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 
 exports.mergeGuestCart = async (req, res) => {
   const { guestId } = req.body;

@@ -16,16 +16,16 @@ exports.createCheckout = async (req, res) => {
     return res.status(400).json({ message: "Shipping address required" });
   }
   const {
-    firstName,
+    firstname,
     lastName,
     address,
     city,
     postalcode,
-    country,
+    state,
     phone,
   } = shippingAddress;
   
-  if (!firstName?.trim())
+  if (!firstname?.trim())
     return res.status(400).json({ message: "First name is required" });
 
   if (!address?.trim())
@@ -34,8 +34,8 @@ exports.createCheckout = async (req, res) => {
   if (!city?.trim())
     return res.status(400).json({ message: "City is required" });
 
-  if (!country?.trim())
-    return res.status(400).json({ message: "Country is required" });
+  if (!state?.trim())
+    return res.status(400).json({ message: "State is required" });
 
   
   const phoneRegex = /^[0-9]{10}$/;

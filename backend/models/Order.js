@@ -49,10 +49,13 @@ const orderSchema = new mongoose.Schema(
     },
     orderItems: [orderItemSchema],
     shippingAddress: {
+      firstname:{type:String,required:true},
+      lastname:{type:String},
       address: { type: String, required: true },
       city: { type: String, required: true },
       postalcode: { type: String, required: true },
-      country: { type: String, required: true },
+      state: { type: String, required: true },
+      phone:{type:String,required:true},
     },
     paymentMethod: {
       type: String,

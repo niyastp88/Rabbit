@@ -174,8 +174,8 @@ const OrderManagement = () => {
       {/* Customer */}
       <div className="mb-4">
         <h3 className="font-semibold mb-1">Customer</h3>
-        <p>{selectedOrder.user.name}</p>
-        <p className="text-sm text-gray-500">{selectedOrder.user.email}</p>
+        <p>{selectedOrder.shippingAddress.firstname}</p>
+        <p>Mobile:{selectedOrder.shippingAddress.phone}</p>
       </div>
 
       {/* Shipping */}
@@ -186,7 +186,7 @@ const OrderManagement = () => {
           {selectedOrder.shippingAddress.city},{" "}
           {selectedOrder.shippingAddress.postalcode}
         </p>
-        <p>{selectedOrder.shippingAddress.country}</p>
+        <p>{selectedOrder.shippingAddress.state}</p>
       </div>
 
       {/* Products */}

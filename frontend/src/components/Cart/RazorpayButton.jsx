@@ -1,8 +1,11 @@
 import axios from "axios";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 
 const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
   const navigate = useNavigate();
+  const [processing, setProcessing] = useState(false);
+
 
   const loadScript = () =>
     new Promise((resolve) => {
@@ -14,6 +17,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
     });
 
   const handlePayment = async () => {
+    setProcessing(true)
     try {
       const loaded = await loadScript();
       if (!loaded) {
@@ -43,6 +47,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
         // 2️⃣ SUCCESS HANDLER
         handler: async (response) => {
           try {
+            setProcessing(true);
             // verify payment
             await axios.post(
               `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/verify`,
@@ -67,6 +72,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
 
             onSuccess(); // → navigate to order-confirmation
           } catch (err) {
+            setProcessing(false);
             navigate("/payment-failed");
           }
         },
@@ -94,11 +100,24 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
 
   return (
     <button
-      onClick={handlePayment}
-      className="w-full bg-black text-white py-3 rounded"
-    >
-      Pay With Razorpay ₹ {amount}
-    </button>
+  onClick={handlePayment}
+  disabled={processing}
+  className={`w-full py-3 rounded text-white font-semibold transition ${
+    processing
+      ? "bg-gray-500 cursor-not-allowed"
+      : "bg-black hover:bg-gray-900"
+  }`}
+>
+  {processing ? (
+    <span className="flex items-center justify-center gap-2">
+      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+      Processing Payment...
+    </span>
+  ) : (
+    `Pay With Razorpay ₹ ${amount}`
+  )}
+</button>
+
   );
 };
 
