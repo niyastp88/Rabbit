@@ -6,7 +6,6 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
 
-
   const loadScript = () =>
     new Promise((resolve) => {
       const script = document.createElement("script");
@@ -17,7 +16,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
     });
 
   const handlePayment = async () => {
-    setProcessing(true)
+    setProcessing(true);
     try {
       const loaded = await loadScript();
       if (!loaded) {
@@ -33,7 +32,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
 
       const options = {
@@ -41,7 +40,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
         amount: order.amount,
         currency: "INR",
         order_id: order.id,
-        name: "Rabbit",
+        name: "ZayanCart",
         description: "Order Payment",
 
         // 2️⃣ SUCCESS HANDLER
@@ -56,7 +55,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                 },
-              }
+              },
             );
 
             // finalize checkout
@@ -67,7 +66,7 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("userToken")}`,
                 },
-              }
+              },
             );
 
             onSuccess(); // → navigate to order-confirmation
@@ -100,24 +99,23 @@ const RazorpayButton = ({ checkoutId, amount, onSuccess }) => {
 
   return (
     <button
-  onClick={handlePayment}
-  disabled={processing}
-  className={`w-full py-3 rounded text-white font-semibold transition ${
-    processing
-      ? "bg-gray-500 cursor-not-allowed"
-      : "bg-black hover:bg-gray-900"
-  }`}
->
-  {processing ? (
-    <span className="flex items-center justify-center gap-2">
-      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-      Processing Payment...
-    </span>
-  ) : (
-    `Pay With Razorpay ₹ ${amount}`
-  )}
-</button>
-
+      onClick={handlePayment}
+      disabled={processing}
+      className={`w-full py-3 rounded text-white font-semibold transition ${
+        processing
+          ? "bg-gray-500 cursor-not-allowed"
+          : "bg-black hover:bg-gray-900"
+      }`}
+    >
+      {processing ? (
+        <span className="flex items-center justify-center gap-2">
+          <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          Processing Payment...
+        </span>
+      ) : (
+        `Pay With Razorpay ₹ ${amount}`
+      )}
+    </button>
   );
 };
 

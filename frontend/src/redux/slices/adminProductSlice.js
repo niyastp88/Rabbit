@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Base API URL
 const API_URL = `${import.meta.env.VITE_BACKEND_URL}`;
 
-// Async thunk to fetch admin products
+// Fetch all products (Admin only with pagination)
 export const fetchAdminProducts = createAsyncThunk(
   "adminProducts/fetchProducts",
   async (params = {}) => {
@@ -15,15 +16,14 @@ export const fetchAdminProducts = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${localStorage.getItem("userToken")}`,
         },
-      }
+      },
     );
 
     return response.data;
-  }
+  },
 );
 
-
-// Async function to create a new product
+// Create new product (Admin only)
 export const createProduct = createAsyncThunk(
   "adminProduct/CreateProduct",
   async (productData) => {
@@ -40,7 +40,7 @@ export const createProduct = createAsyncThunk(
   },
 );
 
-// async thunk to update an existing product
+// Update existing product (Admin only)
 export const updateProduct = createAsyncThunk(
   "adminProducts/updateProduct",
   async ({ id, productData }) => {
@@ -57,7 +57,7 @@ export const updateProduct = createAsyncThunk(
   },
 );
 
-// async thunk to delete a product
+// Delete product (Admin only)
 export const deleteProduct = createAsyncThunk(
   "adminProducts/deleteProduct",
   async (id) => {

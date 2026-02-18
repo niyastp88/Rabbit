@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define schema for individual wishlist items
 const wishlistItemSchema = new mongoose.Schema(
   {
     product: {
@@ -8,7 +9,7 @@ const wishlistItemSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const wishlistSchema = new mongoose.Schema(
@@ -17,11 +18,11 @@ const wishlistSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true, // one wishlist per user
+      unique: true,
     },
     products: [wishlistItemSchema],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("Wishlist", wishlistSchema);

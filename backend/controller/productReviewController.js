@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Product = require("../models/Product");
 const Order = require("../models/Order");
 
+// Get all reviews of a product
 exports.getProductReviews = async (req, res) => {
   try {
     const product = await Product.findById(req.params.productId).select(
@@ -17,7 +18,7 @@ exports.getProductReviews = async (req, res) => {
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
     );
 
-    res.json({
+    res.status(200).json({
       rating: product.rating,
       numReviews: product.numReviews,
       reviews: sortedReviews,
@@ -28,6 +29,7 @@ exports.getProductReviews = async (req, res) => {
   }
 };
 
+// Add review for a product (Only delivered users)
 exports.addProductReview = async (req, res) => {
   console.log("review is working");
   const { rating, comment } = req.body;

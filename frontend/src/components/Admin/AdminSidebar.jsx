@@ -120,7 +120,6 @@ const AdminSidebar = () => {
           <FaStore />
           <span>Banner Management</span>
         </NavLink>
-        
 
         <div className="mt-6">
           <button

@@ -54,10 +54,7 @@ const BrandManagement = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 rounded"
-        >
+        <button type="submit" className="bg-blue-600 text-white px-4 rounded">
           Add
         </button>
       </form>
@@ -65,21 +62,17 @@ const BrandManagement = () => {
       {/* List Brands */}
       {loading ? (
         <div className="space-y-4 animate-pulse">
-
-    
-
-    {/* List Skeleton */}
-    {[1,2,3,4,5].map((item) => (
-      <div
-        key={item}
-        className="flex justify-between items-center border p-3 rounded"
-      >
-        <div className="h-4 w-40 bg-gray-200 rounded"></div>
-        <div className="h-8 w-20 bg-gray-200 rounded"></div>
-      </div>
-    ))}
-
-  </div>
+          {/* List Skeleton */}
+          {[1, 2, 3, 4, 5].map((item) => (
+            <div
+              key={item}
+              className="flex justify-between items-center border p-3 rounded"
+            >
+              <div className="h-4 w-40 bg-gray-200 rounded"></div>
+              <div className="h-8 w-20 bg-gray-200 rounded"></div>
+            </div>
+          ))}
+        </div>
       ) : (
         <ul className="space-y-2">
           {brands.map((brand) => (

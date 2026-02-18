@@ -1,5 +1,9 @@
 const express = require("express");
+
+// Import authentication middleware
 const { protect } = require("../middleware/authMiddleware");
+
+// Import wishlist controller functions
 const {
   toggleWishlist,
   getWishlist,
@@ -8,16 +12,13 @@ const {
 
 const router = express.Router();
 
-// Toggle product in wishlist
-
+// Add or remove product from wishlist
 router.post("/", protect, toggleWishlist);
 
 // Get logged in user's wishlist
-
 router.get("/", protect, getWishlist);
 
 // Remove product from wishlist
-
-router.delete("/:productId", protect,removeFromWishlist);
+router.delete("/:productId", protect, removeFromWishlist);
 
 module.exports = router;

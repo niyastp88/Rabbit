@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define schema for individual cart items
 const cartItemSchema = new mongoose.Schema(
   {
     productId: {
@@ -19,9 +20,10 @@ const cartItemSchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
+// Define schema for cart
 const cartSchema = new mongoose.Schema(
   {
     user: {
@@ -40,7 +42,7 @@ const cartSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Cart", cartSchema);

@@ -1,5 +1,6 @@
 const nodemailer = require("nodemailer");
 
+// Send email with OTP
 const sendEmail = async (email, otp) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -9,6 +10,7 @@ const sendEmail = async (email, otp) => {
     },
   });
 
+  // Send email
   await transporter.sendMail({
     from: `"ZayanCart" <${process.env.EMAIL_USER}>`,
     to: email,

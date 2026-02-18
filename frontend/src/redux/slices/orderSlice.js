@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Async Thunk to fetch user orders
+// Fetch logged-in user's orders
 export const fetchUserOrders = createAsyncThunk(
   "/orders/fetchUserOrders",
   async (_, { rejectWithValue }) => {
@@ -12,16 +12,18 @@ export const fetchUserOrders = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data || { message: "Something went wrong" });
+      return rejectWithValue(
+        error.response.data || { message: "Something went wrong" },
+      );
     }
-  }
+  },
 );
 
-// Async thunk to fetch orders details by ID
+// Fetch single order details by ID
 export const fetchOrderDetails = createAsyncThunk(
   "orders/fetchOrderDetails",
   async (orderId, { rejectWithValue }) => {
@@ -32,21 +34,21 @@ export const fetchOrderDetails = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data || { message: "Something went wrong" });
+      return rejectWithValue(
+        error.response.data || { message: "Something went wrong" },
+      );
     }
-  }
+  },
 );
 
+// Request return for a specific product in an order
 export const requestReturn = createAsyncThunk(
   "orders/requestReturn",
-  async (
-    { orderId, productId, reason, comment },
-    { rejectWithValue }
-  ) => {
+  async ({ orderId, productId, reason, comment }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/return`,
@@ -55,16 +57,18 @@ export const requestReturn = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return { productId, data: response.data };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || { message: "Return request failed" }
+        error.response?.data || { message: "Return request failed" },
       );
     }
-  }
+  },
 );
+
+// Fetch all return requests (Admin only)
 export const fetchReturnRequests = createAsyncThunk(
   "orders/fetchReturnRequests",
   async (_, { rejectWithValue }) => {
@@ -75,22 +79,21 @@ export const fetchReturnRequests = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return res.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || { message: "Failed to fetch returns" }
+        error.response?.data || { message: "Failed to fetch returns" },
       );
     }
-  }
+  },
 );
+
+// Update return status (Admin: approve / reject)
 export const updateReturnStatus = createAsyncThunk(
   "orders/updateReturnStatus",
-  async (
-    { orderId, productId, action },
-    { rejectWithValue }
-  ) => {
+  async ({ orderId, productId, action }, { rejectWithValue }) => {
     try {
       const res = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/return/${productId}`,
@@ -99,17 +102,16 @@ export const updateReturnStatus = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return { orderId, productId, action };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || { message: "Update failed" }
+        error.response?.data || { message: "Update failed" },
       );
     }
-  }
+  },
 );
-
 
 const orderSlice = createSlice({
   name: "orders",
@@ -121,13 +123,12 @@ const orderSlice = createSlice({
     error: null,
     returnSuccess: false,
     returnRequests: [],
-
   },
   reducers: {
     clearReturnStatus: (state) => {
-    state.returnSuccess = false;
-    state.error = null;
-  },
+      state.returnSuccess = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -157,7 +158,7 @@ const orderSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message;
       })
-       /* REQUEST RETURN */
+      /* REQUEST RETURN */
       .addCase(requestReturn.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -172,34 +173,32 @@ const orderSlice = createSlice({
         state.error = action.payload?.message;
       })
       // FETCH RETURNS
-.addCase(fetchReturnRequests.pending, (state) => {
-  state.loading = true;
-})
-.addCase(fetchReturnRequests.fulfilled, (state, action) => {
-  state.loading = false;
-  state.returnRequests = action.payload;
-})
-.addCase(fetchReturnRequests.rejected, (state, action) => {
-  state.loading = false;
-  state.error = action.payload?.message;
-})
+      .addCase(fetchReturnRequests.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchReturnRequests.fulfilled, (state, action) => {
+        state.loading = false;
+        state.returnRequests = action.payload;
+      })
+      .addCase(fetchReturnRequests.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message;
+      })
 
-// UPDATE RETURN STATUS
-.addCase(updateReturnStatus.fulfilled, (state, action) => {
-  const { orderId, productId, action: status } = action.payload;
+      // UPDATE RETURN STATUS
+      .addCase(updateReturnStatus.fulfilled, (state, action) => {
+        const { orderId, productId, action: status } = action.payload;
 
-  const order = state.returnRequests.find(o => o._id === orderId);
-  if (order) {
-    const item = order.orderItems.find(
-      i => i.productId.toString() === productId
-    );
-    if (item) {
-      item.returnStatus = status;
-    }
-  }
-});
-
-
+        const order = state.returnRequests.find((o) => o._id === orderId);
+        if (order) {
+          const item = order.orderItems.find(
+            (i) => i.productId.toString() === productId,
+          );
+          if (item) {
+            item.returnStatus = status;
+          }
+        }
+      });
   },
 });
 

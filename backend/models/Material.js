@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define schema for product materials
 const materialSchema = new mongoose.Schema(
   {
     name: {
@@ -11,7 +12,7 @@ const materialSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Material", materialSchema);

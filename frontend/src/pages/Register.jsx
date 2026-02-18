@@ -14,14 +14,13 @@ const Register = () => {
   const [sendingOTP, setSendingOTP] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [timer, setTimer] = useState(30);
-const [canResend, setCanResend] = useState(false);
-
+  const [canResend, setCanResend] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, guestId, loading,error } = useSelector((state) => state.auth);
+  const { user, guestId, loading, error } = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart);
 
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
@@ -39,27 +38,26 @@ const [canResend, setCanResend] = useState(false);
     }
   }, [user]);
   useEffect(() => {
-  let interval;
+    let interval;
 
-  if (showOTP) {
-    setTimer(30);
-    setCanResend(false);
+    if (showOTP) {
+      setTimer(30);
+      setCanResend(false);
 
-    interval = setInterval(() => {
-      setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          setCanResend(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-  }
+      interval = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setCanResend(true);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
 
-  return () => clearInterval(interval);
-}, [showOTP]);
-
+    return () => clearInterval(interval);
+  }, [showOTP]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +65,7 @@ const [canResend, setCanResend] = useState(false);
     setSendingOTP(true);
 
     const result = await dispatch(
-      registerUser({ name, email, password, mobile })
+      registerUser({ name, email, password, mobile }),
     );
 
     if (result.meta.requestStatus === "fulfilled") {
@@ -85,21 +83,19 @@ const [canResend, setCanResend] = useState(false);
   };
 
   const handleResend = async () => {
-  if (!canResend) return;
+    if (!canResend) return;
 
-  setSendingOTP(true);
-  await dispatch(registerUser({ name, email, password, mobile }));
-  setSendingOTP(false);
+    setSendingOTP(true);
+    await dispatch(registerUser({ name, email, password, mobile }));
+    setSendingOTP(false);
 
-  setTimer(30);
-  setCanResend(false);
-};
-
+    setTimer(30);
+    setCanResend(false);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 transition-all duration-300">
-
         {/* Header */}
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold tracking-tight">
@@ -110,23 +106,26 @@ const [canResend, setCanResend] = useState(false);
           </p>
         </div>
         {error && (
-  <div className="mb-4 bg-red-100 text-red-600 p-3 rounded-lg text-sm text-center">
-    {error}
-  </div>
-)}
-
+          <div className="mb-4 bg-red-100 text-red-600 p-3 rounded-lg text-sm text-center">
+            {error}
+          </div>
+        )}
 
         {!showOTP ? (
           <form onSubmit={handleSubmit} className="space-y-4">
-
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))}
+              onChange={(e) =>
+                setName(e.target.value.replace(/[^a-zA-Z\s]/g, ""))
+              }
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
               placeholder="Full Name"
-              required onInvalid={(e) => e.target.setCustomValidity("Please enter your full name")}
-  onInput={(e) => e.target.setCustomValidity("")}
+              required
+              onInvalid={(e) =>
+                e.target.setCustomValidity("Please enter your full name")
+              }
+              onInput={(e) => e.target.setCustomValidity("")}
             />
 
             <input
@@ -143,8 +142,11 @@ const [canResend, setCanResend] = useState(false);
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
               placeholder="Email Address"
-              required onInvalid={(e) => e.target.setCustomValidity("Please enter vaild email address")}
-  onInput={(e) => e.target.setCustomValidity("")}
+              required
+              onInvalid={(e) =>
+                e.target.setCustomValidity("Please enter vaild email address")
+              }
+              onInput={(e) => e.target.setCustomValidity("")}
             />
 
             <input
@@ -153,8 +155,11 @@ const [canResend, setCanResend] = useState(false);
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-black"
               placeholder="Password"
-              required onInvalid={(e) => e.target.setCustomValidity("Please enter password")}
-  onInput={(e) => e.target.setCustomValidity("")}
+              required
+              onInvalid={(e) =>
+                e.target.setCustomValidity("Please enter password")
+              }
+              onInput={(e) => e.target.setCustomValidity("")}
             />
 
             <button
@@ -164,54 +169,52 @@ const [canResend, setCanResend] = useState(false);
             >
               {sendingOTP ? "Sending OTP..." : "Send OTP"}
             </button>
-
           </form>
         ) : (
           /* OTP SECTION */
           <div className="bg-gray-50 border rounded-xl p-6 text-center shadow-sm">
-  <h3 className="text-lg font-semibold mb-2">
-    Verify Your Email
-  </h3>
+            <h3 className="text-lg font-semibold mb-2">Verify Your Email</h3>
 
-  <p className="text-sm text-gray-500 mb-4">
-    We've sent a 6-digit OTP to
-    <br />
-    <span className="font-medium text-black">{email}</span>
-  </p>
+            <p className="text-sm text-gray-500 mb-4">
+              We've sent a 6-digit OTP to
+              <br />
+              <span className="font-medium text-black">{email}</span>
+            </p>
 
-  <input
-    type="text"
-    value={otp}
-    onChange={(e) => setOtp(e.target.value)}
-    maxLength={6}
-    className="w-full text-center tracking-widest text-xl font-semibold px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black"
-    placeholder="Enter OTP"
-  />
+            <input
+              type="text"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              maxLength={6}
+              className="w-full text-center tracking-widest text-xl font-semibold px-4 py-3 border rounded-lg focus:ring-2 focus:ring-black"
+              placeholder="Enter OTP"
+            />
 
-  <button
-    type="button"
-    onClick={handleVerify}
-    disabled={verifying}
-    className="mt-4 w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-60"
-  >
-    {verifying ? "Verifying..." : "Verify & Create Account"}
-  </button>
+            <button
+              type="button"
+              onClick={handleVerify}
+              disabled={verifying}
+              className="mt-4 w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition disabled:opacity-60"
+            >
+              {verifying ? "Verifying..." : "Verify & Create Account"}
+            </button>
 
-  {/* TIMER */}
-  <div className="mt-4 text-sm text-gray-500">
-    {!canResend ? (
-      <p>Resend OTP in <span className="font-semibold">{timer}s</span></p>
-    ) : (
-      <button
-        onClick={handleResend}
-        className="text-blue-600 font-medium hover:underline"
-      >
-        Resend OTP
-      </button>
-    )}
-  </div>
-</div>
-
+            {/* TIMER */}
+            <div className="mt-4 text-sm text-gray-500">
+              {!canResend ? (
+                <p>
+                  Resend OTP in <span className="font-semibold">{timer}s</span>
+                </p>
+              ) : (
+                <button
+                  onClick={handleResend}
+                  className="text-blue-600 font-medium hover:underline"
+                >
+                  Resend OTP
+                </button>
+              )}
+            </div>
+          </div>
         )}
 
         <p className="text-sm text-center mt-6">
@@ -223,7 +226,6 @@ const [canResend, setCanResend] = useState(false);
             Login
           </Link>
         </p>
-
       </div>
     </div>
   );

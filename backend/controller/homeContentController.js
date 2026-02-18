@@ -1,11 +1,20 @@
 const HomeContent = require("../models/HomeContent");
 
-exports.getHomeContent =async (req, res) => {
-  const content = await HomeContent.findOne();
-  res.json(content);
-}
+// Get home page content
+exports.getHomeContent = async (req, res) => {
+  try {
+    const content = await HomeContent.findOne();
 
-exports.updateHomeContent =async (req, res) => {
+    return res.status(200).json(content);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+// Update home page content
+exports.updateHomeContent = async (req, res) => {
   try {
     let home = await HomeContent.findOne();
 
@@ -38,9 +47,9 @@ exports.updateHomeContent =async (req, res) => {
     }
 
     await home.save();
-    res.json(home);
+    res.status(200).json(home);
   } catch (error) {
     console.error("HomeContent update error:", error);
     res.status(500).json({ message: "Update failed" });
   }
-}
+};

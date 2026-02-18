@@ -9,24 +9,22 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
- 
-const [confirmPassword, setConfirmPassword] = useState("");
 
-
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-  if (password !== confirmPassword) {
-    setError("Passwords do not match");
-    return;
-  }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
 
     try {
       const res = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/reset-password/${token}`,
-        { password }
+        { password },
       );
 
       setMessage(res.data.message);
@@ -39,10 +37,7 @@ const [confirmPassword, setConfirmPassword] = useState("");
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-xl shadow-md p-8">
-
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Reset Password
-        </h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Reset Password</h2>
 
         {error && (
           <div className="bg-red-100 text-red-600 p-2 rounded mb-3 text-sm">
@@ -57,7 +52,6 @@ const [confirmPassword, setConfirmPassword] = useState("");
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-
           <input
             type="password"
             placeholder="Enter new strong password"
@@ -67,13 +61,13 @@ const [confirmPassword, setConfirmPassword] = useState("");
             required
           />
           <input
-  type="password"
-  value={confirmPassword}
-  onChange={(e) => setConfirmPassword(e.target.value)}
-  placeholder="Confirm Password"
-  className="w-full px-4 py-2 border rounded-lg"
-  required
-/>
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm Password"
+            className="w-full px-4 py-2 border rounded-lg"
+            required
+          />
 
           <button
             type="submit"
@@ -81,9 +75,7 @@ const [confirmPassword, setConfirmPassword] = useState("");
           >
             Reset Password
           </button>
-
         </form>
-
       </div>
     </div>
   );

@@ -1,5 +1,9 @@
 const express = require("express");
+
+// Import authentication and authorization middleware
 const { protect, admin } = require("../middleware/authMiddleware");
+
+// Import brand controller functions
 const {
   createBrand,
   getBrands,
@@ -8,16 +12,13 @@ const {
 
 const router = express.Router();
 
-// @desc Create new Brand
-
+// Create new brand
 router.post("/", protect, admin, createBrand);
 
-// @desc Get all Brands
-
+// Get all brands
 router.get("/", getBrands);
 
-// Delete a Brand by ID
-
+// Delete brand by ID
 router.delete("/:id", protect, admin, deleteBrand);
 
 module.exports = router;

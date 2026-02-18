@@ -13,12 +13,9 @@ const ProductManagement = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
-  const {
-    products,
-    loading,
-    error,
-    pages,
-  } = useSelector((state) => state.adminProducts);
+  const { products, loading, error, pages } = useSelector(
+    (state) => state.adminProducts,
+  );
 
   // 🔹 fetch products when page changes
   useEffect(() => {
@@ -32,50 +29,45 @@ const ProductManagement = () => {
   };
 
   if (loading) {
-  return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-6">Product Management</h2>
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <h2 className="text-2xl font-bold mb-6">Product Management</h2>
 
-      {/* Add Button Skeleton */}
-      <div className="flex justify-end mb-4">
-        <div className="h-10 w-32 bg-gray-200 rounded animate-pulse"></div>
-      </div>
+        {/* Add Button Skeleton */}
+        <div className="flex justify-end mb-4">
+          <div className="h-10 w-32 bg-gray-200 rounded animate-pulse"></div>
+        </div>
 
-      {/* Table Skeleton */}
-      <div className="overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
-        <div className="animate-pulse space-y-4">
-
-          {/* Header Row */}
-          <div className="grid grid-cols-5 gap-4 mb-4">
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-4 bg-gray-200 rounded"></div>
-            <div className="h-4 bg-gray-200 rounded"></div>
-          </div>
-
-          {/* Product Rows */}
-          {[1,2,3,4,5,6,7].map((row) => (
-            <div
-              key={row}
-              className="grid grid-cols-5 gap-4 items-center"
-            >
-              <div className="h-16 w-14 bg-gray-200 rounded"></div>
+        {/* Table Skeleton */}
+        <div className="overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
+          <div className="animate-pulse space-y-4">
+            {/* Header Row */}
+            <div className="grid grid-cols-5 gap-4 mb-4">
               <div className="h-4 bg-gray-200 rounded"></div>
               <div className="h-4 bg-gray-200 rounded"></div>
               <div className="h-4 bg-gray-200 rounded"></div>
-              <div className="flex gap-2">
-                <div className="h-6 w-12 bg-gray-200 rounded"></div>
-                <div className="h-6 w-14 bg-gray-200 rounded"></div>
-              </div>
+              <div className="h-4 bg-gray-200 rounded"></div>
+              <div className="h-4 bg-gray-200 rounded"></div>
             </div>
-          ))}
 
+            {/* Product Rows */}
+            {[1, 2, 3, 4, 5, 6, 7].map((row) => (
+              <div key={row} className="grid grid-cols-5 gap-4 items-center">
+                <div className="h-16 w-14 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="flex gap-2">
+                  <div className="h-6 w-12 bg-gray-200 rounded"></div>
+                  <div className="h-6 w-14 bg-gray-200 rounded"></div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   if (error) return <p className="p-6 text-red-500">Error: {error}</p>;
 
@@ -109,10 +101,7 @@ const ProductManagement = () => {
           <tbody>
             {products && products.length > 0 ? (
               products.map((product) => (
-                <tr
-                  key={product._id}
-                  className="border-b hover:bg-gray-50"
-                >
+                <tr key={product._id} className="border-b hover:bg-gray-50">
                   {/* IMAGE */}
                   <td className="p-4">
                     <img
@@ -164,10 +153,7 @@ const ProductManagement = () => {
               ))
             ) : (
               <tr>
-                <td
-                  colSpan={5}
-                  className="p-4 text-center text-gray-500"
-                >
+                <td colSpan={5} className="p-4 text-center text-gray-500">
                   No Products Found
                 </td>
               </tr>
@@ -198,9 +184,7 @@ const ProductManagement = () => {
               key={i}
               onClick={() => setPage(i + 1)}
               className={`px-3 py-1 rounded ${
-                page === i + 1
-                  ? "bg-black text-white"
-                  : "bg-gray-200"
+                page === i + 1 ? "bg-black text-white" : "bg-gray-200"
               }`}
             >
               {i + 1}

@@ -11,7 +11,7 @@ const Checkout = () => {
   const dispatch = useDispatch();
 
   const { cart, loading, error } = useSelector((state) => state.cart);
-  const {  error:checkoutError } = useSelector((state) => state.checkout);
+  const { error: checkoutError } = useSelector((state) => state.checkout);
   const { user } = useSelector((state) => state.auth);
 
   const [checkoutId, setCheckoutId] = useState(null);
@@ -28,7 +28,6 @@ const Checkout = () => {
     phone: "",
   });
 
-  /* 🔥 VERIFY STOCK (UI friendly version) */
   useEffect(() => {
     if (!cart?.products?.length) {
       navigate("/");
@@ -41,7 +40,7 @@ const Checkout = () => {
 
         for (const item of cart.products) {
           const res = await axios.get(
-            `${import.meta.env.VITE_BACKEND_URL}/api/products/${item.productId}`
+            `${import.meta.env.VITE_BACKEND_URL}/api/products/${item.productId}`,
           );
 
           const stock = res.data.countInStock;
@@ -49,9 +48,7 @@ const Checkout = () => {
           if (stock === 0) {
             toast.error(`${item.name} is out of stock`);
           } else if (item.quantity > stock) {
-            toast.error(
-              `${item.name}: only ${stock} item(s) available`
-            );
+            toast.error(`${item.name}: only ${stock} item(s) available`);
           } else {
             available.push(item);
           }
@@ -76,12 +73,10 @@ const Checkout = () => {
       toast.error("No available products to checkout");
       return;
     }
-    
-
 
     const totalPrice = validItems.reduce(
       (acc, item) => acc + item.price * item.quantity,
-      0
+      0,
     );
 
     const res = await dispatch(
@@ -90,15 +85,15 @@ const Checkout = () => {
         shippingAddress,
         paymentMethod: "Razorpay",
         totalPrice,
-      })
+      }),
     );
     if (res.meta.requestStatus === "rejected") {
-    toast.error(res.payload?.message || "Checkout failed", {
-      className:
-        "bg-red-600 text-white border border-red-700 shadow-xl rounded-xl",
-    });
-    return;
-  }
+      toast.error(res.payload?.message || "Checkout failed", {
+        className:
+          "bg-red-600 text-white border border-red-700 shadow-xl rounded-xl",
+      });
+      return;
+    }
 
     if (res.payload?._id) {
       setCheckoutId(res.payload._id);
@@ -112,7 +107,6 @@ const Checkout = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-7xl mx-auto py-10 px-6">
       {/* LEFT – FORM */}
       <div className="bg-white p-6 rounded-lg">
-        
         <h2 className="text-2xl uppercase mb-6">Checkout</h2>
 
         <form onSubmit={handleCreateCheckout}>
@@ -127,7 +121,8 @@ const Checkout = () => {
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
-              placeholder="First Name" type="text"
+              placeholder="First Name"
+              type="text"
               className="p-2 border rounded"
               value={shippingAddress.firstname}
               onChange={(e) =>
@@ -136,10 +131,10 @@ const Checkout = () => {
                   firstname: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
                 })
               }
-              
             />
             <input
-              placeholder="Last Name" type="text"
+              placeholder="Last Name"
+              type="text"
               className="p-2 border rounded"
               value={shippingAddress.lastname}
               onChange={(e) =>
@@ -152,7 +147,8 @@ const Checkout = () => {
           </div>
 
           <input
-            placeholder="Address" type="text"
+            placeholder="Address"
+            type="text"
             className="w-full p-2 border rounded mb-4"
             value={shippingAddress.address}
             onChange={(e) =>
@@ -161,12 +157,12 @@ const Checkout = () => {
                 address: e.target.value.replace(/[^a-zA-Z\s]/g, ""),
               })
             }
-            
           />
 
           <div className="grid grid-cols-2 gap-4 mb-4">
             <input
-              placeholder="City" type="text"
+              placeholder="City"
+              type="text"
               className="p-2 border rounded"
               value={shippingAddress.city}
               onChange={(e) =>
@@ -177,7 +173,8 @@ const Checkout = () => {
               }
             />
             <input
-              placeholder="Postal Code" type="Number"
+              placeholder="Postal Code"
+              type="Number"
               className="p-2 border rounded"
               value={shippingAddress.postalcode}
               onChange={(e) =>
@@ -186,7 +183,6 @@ const Checkout = () => {
                   postalcode: e.target.value,
                 })
               }
-              
             />
           </div>
 
@@ -200,12 +196,12 @@ const Checkout = () => {
                 state: e.target.value,
               })
             }
-            
           />
 
           <input
             placeholder="Phone"
-            className="w-full p-2 border rounded mb-6" type="Number"
+            className="w-full p-2 border rounded mb-6"
+            type="Number"
             value={shippingAddress.phone}
             onChange={(e) =>
               setShippingAddress({
@@ -213,7 +209,6 @@ const Checkout = () => {
                 phone: e.target.value,
               })
             }
-            
           />
 
           {!checkoutId ? (
@@ -225,7 +220,7 @@ const Checkout = () => {
               checkoutId={checkoutId}
               amount={validItems.reduce(
                 (acc, i) => acc + i.price * i.quantity,
-                0
+                0,
               )}
               onSuccess={() => navigate("/order-confirmation")}
             />
@@ -253,9 +248,7 @@ const Checkout = () => {
                 <p className="text-sm text-gray-500">
                   Size: {product.size} | Color: {product.color}
                 </p>
-                <p className="text-sm text-gray-500">
-                  Qty: {product.quantity}
-                </p>
+                <p className="text-sm text-gray-500">Qty: {product.quantity}</p>
               </div>
             </div>
             <p className="font-medium">

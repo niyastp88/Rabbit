@@ -50,9 +50,8 @@ const OrderConfirmationPage = () => {
                 Order ID: {checkout._id}
               </h2>
               <p className="text-gray-500">
-  Order date: {formatDateDDMMYYYY(checkout.createdAt)}
-</p>
-
+                Order date: {formatDateDDMMYYYY(checkout.createdAt)}
+              </p>
             </div>
             {/* Estimated Delivery */}
             <div>
@@ -78,7 +77,7 @@ const OrderConfirmationPage = () => {
                   </p>
                 </div>
                 <div className="ml-auto text-right">
-                  <p className="text-md">Rs.{(item.price*item.quantity)}</p>
+                  <p className="text-md">Rs.{item.price * item.quantity}</p>
                   <p className="text-sm text-gray-500">qty: {item.quantity}</p>
                 </div>
               </div>
@@ -98,7 +97,8 @@ const OrderConfirmationPage = () => {
                 {checkout.shippingAddress.address}
               </p>
               <p className="text-gray-600">
-                {checkout.shippingAddress.city}, {checkout.shippingAddress.postalcode}
+                {checkout.shippingAddress.city},{" "}
+                {checkout.shippingAddress.postalcode}
               </p>
             </div>
           </div>

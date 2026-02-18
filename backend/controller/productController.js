@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
 
+// Create a new product
 exports.createProduct = async (req, res) => {
   try {
     const {
@@ -16,7 +17,7 @@ exports.createProduct = async (req, res) => {
       images,
     } = req.body;
 
-    // 🔐 Strict validation
+    // Validate required fields
     if (
       !name ||
       !description ||
@@ -36,7 +37,7 @@ exports.createProduct = async (req, res) => {
       });
     }
 
-    // 🚫 Prevent extra unwanted fields
+    //  Prevent extra unwanted fields
     const allowedFields = [
       "name",
       "description",
@@ -67,17 +68,14 @@ exports.createProduct = async (req, res) => {
       name,
       description,
       price,
-
       countInStock,
       category,
       brand,
       sizes,
       colors,
-
       material,
       gender,
       images,
-
       user: req.user._id,
     });
 
@@ -97,6 +95,7 @@ exports.createProduct = async (req, res) => {
   }
 };
 
+// Update an existing product
 exports.updateProduct = async (req, res) => {
   try {
     const {
@@ -114,12 +113,10 @@ exports.updateProduct = async (req, res) => {
       images,
     } = req.body;
 
-    // Find product by ID
-
     const product = await Product.findById(req.params.id);
 
     if (product) {
-      // Update product fields
+      // Update fields if provided
       product.name = name || product.name;
       product.description = description || product.description;
       product.price = price || product.price;
@@ -128,14 +125,13 @@ exports.updateProduct = async (req, res) => {
       product.brand = brand || product.brand;
       product.sizes = sizes || product.sizes;
       product.colors = colors || product.colors;
-
       product.material = material || product.material;
       product.gender = gender || product.gender;
       product.images = images || product.images;
 
       // Save the updated product
       const updatedProduct = await product.save();
-      res.json(updatedProduct);
+      res.status(200).json(updatedProduct);
     } else {
       res.status(404).json({ message: "Product not found" });
     }
@@ -145,14 +141,13 @@ exports.updateProduct = async (req, res) => {
   }
 };
 
+// Delete a product
 exports.deleteProduct = async (req, res) => {
   try {
-    // Find the product by ID
     const product = await Product.findById(req.params.id);
     if (product) {
-      // Remove the product by ID
       await product.deleteOne();
-      res.json({ message: "Product removed" });
+      res.status(200).json({ message: "Product removed" });
     } else {
       res.status(404).json({ messahe: "Product not found" });
     }
@@ -162,11 +157,12 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
+// Get product with highest rating
 exports.getBestSeller = async (req, res) => {
   try {
     const bestSeller = await Product.findOne().sort({ rating: -1 });
     if (bestSeller) {
-      res.json(bestSeller);
+      res.status(200).json(bestSeller);
     } else {
       res.status(404).json({ message: "No best seller found" });
     }
@@ -176,17 +172,19 @@ exports.getBestSeller = async (req, res) => {
   }
 };
 
+// Get latest products
 exports.getNewArrivals = async (req, res) => {
   try {
     // Fetch latest 8 products
     const newArrivals = await Product.find().sort({ createdAt: -1 }).limit(8);
-    res.json(newArrivals);
+    res.status(200).json(newArrivals);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
   }
 };
 
+// Get all products with filtering, sorting and pagination
 exports.getProducts = async (req, res) => {
   try {
     const {
@@ -259,7 +257,7 @@ exports.getProducts = async (req, res) => {
           break;
       }
     }
-    // Fetch products and apply sorting and limit
+
     // pagination
     const page = Number(req.query.page) || 1;
     const limitNum = Number(req.query.limit) || 12;
@@ -274,7 +272,7 @@ exports.getProducts = async (req, res) => {
       .skip(skip)
       .limit(limitNum);
 
-    res.json({
+    res.status(200).json({
       products,
       page,
       pages: Math.ceil(total / limitNum),
@@ -286,11 +284,12 @@ exports.getProducts = async (req, res) => {
   }
 };
 
+// Get product by ID
 exports.getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
-      res.json(product);
+      res.status(200).json(product);
     } else {
       res.status(404).json({ message: "Product Not Found" });
     }
@@ -300,6 +299,7 @@ exports.getProductById = async (req, res) => {
   }
 };
 
+// Get similar products
 exports.getSimilarProducts = async (req, res) => {
   const { id } = req.params;
   try {
@@ -312,7 +312,7 @@ exports.getSimilarProducts = async (req, res) => {
       gender: product.gender,
       category: product.category,
     }).limit(4);
-    res.json(similarProducts);
+    res.status(200).json(similarProducts);
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");

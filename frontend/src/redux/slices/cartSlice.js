@@ -1,21 +1,21 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Helper funcion to load cart from localstorage
-
+// Load cart from localStorage (used for guest persistence)
 const loadCartFromStorage = () => {
   const storedCart = localStorage.getItem("cart");
+
+  // If cart exists in localStorage → return it
+  // Otherwise return default empty structure
   return storedCart ? JSON.parse(storedCart) : { products: [] };
 };
 
-// Helper function to save cart to localStorage
-
+// Save cart to localStorage after every successful update
 const saveCartToStorage = (cart) => {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
 
-//Fetch cart for a user or guest
-
+// Fetch cart for logged-in user or guest user
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
   async ({ userId, guestId }, { rejectWithValue }) => {
@@ -24,22 +24,24 @@ export const fetchCart = createAsyncThunk(
         `${import.meta.env.VITE_BACKEND_URL}/api/cart`,
         {
           params: { userId, guestId },
-        }
+        },
       );
       return response.data;
     } catch (error) {
       console.error(error);
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response.data || { message: "Something went wrong" },
+      );
     }
-  }
+  },
 );
 
-// Add an item to the cart for a user or guest
+// Add a product to the cart
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async (
     { productId, quantity, size, color, guestId, userId },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await axios.post(
@@ -51,22 +53,23 @@ export const addToCart = createAsyncThunk(
           color,
           guestId,
           userId,
-        }
+        },
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response.data || { message: "Something went wrong" },
+      );
     }
-  }
+  },
 );
 
-// Update the quantity of an item in the cart
-
+// Update quantity of an existing cart item
 export const updateCartItemQuantity = createAsyncThunk(
   "cart/updateCartItemQuantity",
   async (
     { productId, quantity, guestId, userId, size, color },
-    { rejectWithValue }
+    { rejectWithValue },
   ) => {
     try {
       const response = await axios.put(
@@ -78,16 +81,18 @@ export const updateCartItemQuantity = createAsyncThunk(
           userId,
           size,
           color,
-        }
+        },
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response.data || { message: "Something went wrong" },
+      );
     }
-  }
+  },
 );
 
-// Remove an item from the cart
+// Remove a product from the cart
 export const removeFromCart = createAsyncThunk(
   "cart/removeFromCart",
   async ({ productId, guestId, userId, size, color }, { rejectWithValue }) => {
@@ -99,12 +104,14 @@ export const removeFromCart = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response.data || { message: "Something went wrong" },
+      );
     }
-  }
+  },
 );
 
-// Merge guest Cart into user cart
+// Merge guest cart into user cart after login
 export const mergeCart = createAsyncThunk(
   "cart/mergeCart",
   async ({ guestId, user }, { rejectWithValue }) => {
@@ -119,13 +126,15 @@ export const mergeCart = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(
+        error.response.data || { message: "Something went wrong" },
+      );
     }
-  }
+  },
 );
 
 const cartSlice = createSlice({

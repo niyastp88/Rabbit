@@ -2,13 +2,12 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { fetchCart } from "./cartSlice";
 
-// Retrieve user info and token from local storage if available
+// Retrieve stored user from localStorage (if exists)
 const userFromStorage = localStorage.getItem("userInfo")
   ? JSON.parse(localStorage.getItem("userInfo"))
   : null;
 
-// Check for an existing guest ID in the localstorage or generate a new one
-
+// Initial auth state
 const initialGuestId =
   localStorage.getItem("guestId") || `geust_${new Date().getTime()}`;
 localStorage.setItem("guestId", initialGuestId);
@@ -21,49 +20,52 @@ const initialState = {
   error: null,
 };
 
-// Async Thunk for user login
+// ================== ASYNC THUNKS ==================
+
+// Login user
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/login`,
-        userData
+        userData,
       );
       localStorage.setItem("userInfo", JSON.stringify(response.data.user));
       localStorage.setItem("userToken", response.data.token);
 
-      return response.data.user; // return the user object from the response
+      return response.data.user;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
-// Async Thunk for user registration
+// Register user
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/register`,
-        userData
+        userData,
       );
 
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
+// Verify OTP
 export const verifyOTP = createAsyncThunk(
   "auth/verifyOTP",
   async ({ email, otp }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/verify-otp`,
-        { email, otp }
+        { email, otp },
       );
 
       localStorage.setItem("userInfo", JSON.stringify(response.data.user));
@@ -73,16 +75,17 @@ export const verifyOTP = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
+// Google login
 export const googleLogin = createAsyncThunk(
   "auth/googleLogin",
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/users/google`,
-        data
+        data,
       );
 
       localStorage.setItem("userInfo", JSON.stringify(response.data.user));
@@ -92,23 +95,20 @@ export const googleLogin = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
-
-
-
-// slice
+// ================== SLICE ==================
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
     logout: (state) => {
       state.user = null;
-      state.guestId = `guest_${new Date().getTime()}`; // Reset guest ID on logout
+      state.guestId = `guest_${new Date().getTime()}`;
       localStorage.removeItem("userInfo");
       localStorage.removeItem("userToken");
-      localStorage.setItem("guesId", state.guestId); // Set new guest ID in localStorage
+      localStorage.setItem("guesId", state.guestId);
     },
     generateNewGuestId: (state) => {
       state.guestId = `guest_${new Date().getTime()}`;
@@ -144,23 +144,20 @@ const authSlice = createSlice({
         state.error = action.payload.message || action.error?.message;
       })
       .addCase(verifyOTP.pending, (state) => {
-  state.loading = true;
-  state.error = null;
-})
-.addCase(verifyOTP.fulfilled, (state, action) => {
-  state.loading = false;
-  state.user = action.payload; // NOW login happens
-})
-.addCase(verifyOTP.rejected, (state, action) => {
-  state.loading = false;
-  state.error = action.payload?.message || action.error?.message;
-})
-.addCase(googleLogin.fulfilled, (state, action) => {
-  state.user = action.payload;
-});
-
-
-
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOTP.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(verifyOTP.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || action.error?.message;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.user = action.payload;
+      });
   },
 });
 

@@ -12,8 +12,7 @@ import brandReducer from "./slices/brandSlice";
 import materialReducer from "./slices/materialSlice";
 import wishlistReducer from "./slices/wishlistSlice";
 
-
-
+// Configure Redux store
 const store = configureStore({
   reducer: {
     auth: authReducer,

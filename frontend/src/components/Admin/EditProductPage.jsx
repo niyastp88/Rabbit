@@ -16,9 +16,7 @@ const EditProductPage = () => {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const { selectedProduct, loading } = useSelector(
-    (state) => state.products
-  );
+  const { selectedProduct, loading } = useSelector((state) => state.products);
   const { categories } = useSelector((state) => state.categories);
   const { brands } = useSelector((state) => state.brands);
   const { materials } = useSelector((state) => state.materials);
@@ -30,7 +28,7 @@ const EditProductPage = () => {
     description: "",
     price: "",
     countInStock: "",
-    
+
     category: "",
     brand: "",
     sizes: [],
@@ -70,7 +68,7 @@ const EditProductPage = () => {
       const { data } = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        { headers: { "Content-Type": "multipart/form-data" } },
       );
 
       setProductData((prev) => {
@@ -99,9 +97,7 @@ const EditProductPage = () => {
       <h2 className="text-3xl font-bold mb-6">Edit Product</h2>
 
       <form onSubmit={handleSubmit}>
-        <label className="block font-semibold mb-2">
-    Name
-  </label>
+        <label className="block font-semibold mb-2">Name</label>
         <input
           className="w-full p-2 border mb-4"
           name="name"
@@ -110,9 +106,7 @@ const EditProductPage = () => {
           required
         />
 
-        <label className="block font-semibold mb-2">
-    Description
-  </label>
+        <label className="block font-semibold mb-2">Description</label>
 
         <textarea
           className="w-full p-2 border mb-4"
@@ -122,33 +116,29 @@ const EditProductPage = () => {
           required
         />
 
-        <label className="block font-semibold mb-2">
-    Price
-  </label>
+        <label className="block font-semibold mb-2">Price</label>
 
         <input
           className="w-full p-2 border mb-4"
           type="number"
           name="price"
           value={productData.price}
-          onChange={handleChange} required
+          onChange={handleChange}
+          required
         />
 
-        <label className="block font-semibold mb-2">
-    Stock
-  </label>
+        <label className="block font-semibold mb-2">Stock</label>
 
         <input
           className="w-full p-2 border mb-4"
           type="number"
           name="countInStock"
           value={productData.countInStock}
-          onChange={handleChange} required
+          onChange={handleChange}
+          required
         />
 
-        <label className="block font-semibold mb-2">
-    Category
-  </label>
+        <label className="block font-semibold mb-2">Category</label>
 
         {/* Category */}
         <select
@@ -166,9 +156,7 @@ const EditProductPage = () => {
         </select>
 
         {/* Brand */}
-        <label className="block font-semibold mb-2">
-    Brand
-  </label>
+        <label className="block font-semibold mb-2">Brand</label>
         <select
           name="brand"
           value={productData.brand}
@@ -184,9 +172,7 @@ const EditProductPage = () => {
         </select>
 
         {/* Material */}
-        <label className="block font-semibold mb-2">
-    Material
-  </label>
+        <label className="block font-semibold mb-2">Material</label>
         <select
           name="material"
           value={productData.material}
@@ -216,9 +202,7 @@ const EditProductPage = () => {
         </div>
 
         {/* Sizes */}
-        <label className="block font-semibold mb-2">
-    Sizes
-  </label>
+        <label className="block font-semibold mb-2">Sizes</label>
         <input
           className="w-full p-2 border mb-4"
           value={productData.sizes.join(",")}
@@ -227,13 +211,12 @@ const EditProductPage = () => {
               ...productData,
               sizes: e.target.value.split(",").map((s) => s.trim()),
             })
-          } required
+          }
+          required
         />
 
         {/* Colors */}
-        <label className="block font-semibold mb-2">
-    Colors
-  </label>
+        <label className="block font-semibold mb-2">Colors</label>
         <input
           className="w-full p-2 border mb-4"
           value={productData.colors.join(",")}
@@ -242,7 +225,8 @@ const EditProductPage = () => {
               ...productData,
               colors: e.target.value.split(",").map((c) => c.trim()),
             })
-          } required
+          }
+          required
         />
 
         {/* Image Uploads */}

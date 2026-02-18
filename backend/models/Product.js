@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
+// Define schema for product reviews
 const reviewSchema = new mongoose.Schema(
   {
+    // Reference to the user who wrote the review
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -24,7 +26,7 @@ const reviewSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const productSchema = new mongoose.Schema(
@@ -42,12 +44,12 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    
+
     countInStock: {
       type: Number,
-      required:true,
+      required: true,
     },
-    
+
     category: {
       type: String,
       required: true,
@@ -56,29 +58,25 @@ const productSchema = new mongoose.Schema(
       type: String,
     },
     sizes: {
-  type: [String],
-  required: true,
-  enum: {
-    values: ["XS", "S", "M", "L", "XL", "XXL"],
-    message: "Sizes must be XS, S, M or L only",
-  },
-},
+      type: [String],
+      required: true,
+      enum: {
+        values: ["XS", "S", "M", "L", "XL", "XXL"],
+        message: "Sizes must be XS, S, M or L only",
+      },
+    },
 
     colors: {
-  type: [String],
-  required: true,
-  validate: {
-    validator: function (colors) {
-      return colors.every(
-        (color) => /^[A-Z][a-z]+$/.test(color)
-      );
+      type: [String],
+      required: true,
+      validate: {
+        validator: function (colors) {
+          return colors.every((color) => /^[A-Z][a-z]+$/.test(color));
+        },
+        message: "Colors must start with capital letter (Eg: Red, Blue)",
+      },
     },
-    message:
-      "Colors must start with capital letter (Eg: Red, Blue)",
-  },
-},
 
-    
     material: {
       type: String,
     },
@@ -99,7 +97,7 @@ const productSchema = new mongoose.Schema(
         },
       },
     ],
-   reviews: [reviewSchema],
+    reviews: [reviewSchema],
     rating: {
       type: Number,
       default: 0,
@@ -109,16 +107,16 @@ const productSchema = new mongoose.Schema(
       default: 0,
     },
     
+    // Reference to admin user who created the product
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("products", productSchema);

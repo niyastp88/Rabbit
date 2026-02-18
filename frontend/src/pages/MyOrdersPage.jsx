@@ -103,36 +103,32 @@ const MyOrdersPage = () => {
             ))
           ) : (
             <tr>
-    <td colSpan={7}>
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        
-        {/* Icon */}
-        <div className="text-6xl mb-4 opacity-70">
-          🛍️
-        </div>
+              <td colSpan={7}>
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                  {/* Icon */}
+                  <div className="text-6xl mb-4 opacity-70">🛍️</div>
 
-        {/* Heading */}
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">
-          No Orders Yet
-        </h3>
+                  {/* Heading */}
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                    No Orders Yet
+                  </h3>
 
-        {/* Subtext */}
-        <p className="text-gray-500 mb-6 max-w-md">
-          Looks like you haven't placed any orders yet. 
-          Start shopping to see your orders appear here.
-        </p>
+                  {/* Subtext */}
+                  <p className="text-gray-500 mb-6 max-w-md">
+                    Looks like you haven't placed any orders yet. Start shopping
+                    to see your orders appear here.
+                  </p>
 
-        {/* Button */}
-        <button
-          onClick={() => navigate("/")}
-          className="bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition"
-        >
-          Start Shopping
-        </button>
-
-      </div>
-    </td>
-  </tr>
+                  {/* Button */}
+                  <button
+                    onClick={() => navigate("/")}
+                    className="bg-black text-white px-6 py-3 rounded-md hover:bg-gray-800 transition"
+                  >
+                    Start Shopping
+                  </button>
+                </div>
+              </td>
+            </tr>
           )}
         </tbody>
       </table>

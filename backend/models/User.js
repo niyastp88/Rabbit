@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+// Define user schema
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -23,11 +24,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
     },
 
+    // User password (required only if not Google user)
+
     password: {
       type: String,
       required: function () {
-    return !this.googleId; // password required only if NOT google user
-  },
+        return !this.googleId; // Password required only if NOT google user
+      },
       minlength: 8,
       validate: {
         validator: function (value) {
@@ -51,18 +54,18 @@ const userSchema = new mongoose.Schema(
     resetPasswordToken: String,
     resetPasswordExpire: Date,
     googleId: {
-  type: String,
-},
+      type: String,
+    },
 
-isBlocked: {
-  type: Boolean,
-  default: false,
-},
-
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );
 
+// Method to compare entered password with hashed password
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

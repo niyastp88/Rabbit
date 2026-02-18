@@ -1,5 +1,6 @@
 const Product = require("../models/Product");
 
+// Get all products with pagination (Admin only)
 exports.getAllProductsAdmin = async (req, res) => {
   try {
     const page = Number(req.query.page) || 1;
@@ -12,7 +13,7 @@ exports.getAllProductsAdmin = async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 });
 
-    res.json({
+    res.status(200).json({
       products,
       page,
       pages: Math.ceil(total / limit),

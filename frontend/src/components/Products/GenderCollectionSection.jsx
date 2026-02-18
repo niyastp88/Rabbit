@@ -7,7 +7,6 @@ const GenderCollectionSection = ({ menImage, womenImage }) => {
   return (
     <section className="py-16 px-4 lg:px-0">
       <div className="container mx-auto flex flex-col md:flex-row gap-8">
-
         {/* WOMEN */}
         <div className="relative flex-1">
           <img
@@ -43,7 +42,6 @@ const GenderCollectionSection = ({ menImage, womenImage }) => {
             </Link>
           </div>
         </div>
-
       </div>
     </section>
   );

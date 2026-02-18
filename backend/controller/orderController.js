@@ -1,30 +1,32 @@
 const Order = require("../models/Order");
 
+// Get logged-in user's orders
 exports.getMyOrders = async (req, res) => {
   try {
-    // Find orders for the authenticated user
     const orders = await Order.find({ user: req.user._id }).sort({
       createdAt: -1,
-    }); // sort by most recent orders
-    res.json(orders);
+    });
+    res.status(200).json(orders);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 };
 
+// Get all return requests (Admin only)
 exports.getReturnRequests = async (req, res) => {
   try {
     const orders = await Order.find({
       "orderItems.returnRequested": true,
     }).sort({ createdAt: -1 });
 
-    res.json(orders);
+    res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
 
+// Request return for a product
 exports.requestReturn = async (req, res) => {
   const { productId, reason, comment } = req.body;
   const allowedReasons = [
@@ -88,13 +90,14 @@ exports.requestReturn = async (req, res) => {
 
     await order.save();
 
-    res.json({ message: "Return request submitted successfully" });
+    res.status(200).json({ message: "Return request submitted successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 };
 
+// Approve or reject return request (Admin only)
 exports.updateReturnStatus = async (req, res) => {
   const { action } = req.body; // approved | rejected
 
@@ -120,9 +123,10 @@ exports.updateReturnStatus = async (req, res) => {
   item.returnStatus = action;
   await order.save();
 
-  res.json({ message: `Return ${action}` });
+  res.status(200).json({ message: `Return ${action}` });
 };
 
+// Get order details by ID
 exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate(
@@ -132,9 +136,8 @@ exports.getOrderById = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-
     // Return the full order details
-    res.json(order);
+    res.status(200).json(order);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });

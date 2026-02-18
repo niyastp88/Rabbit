@@ -10,14 +10,11 @@ const VerifyOtp = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user, guestId, error, loading } = useSelector(
-    (state) => state.auth
-  );
+  const { user, guestId, error, loading } = useSelector((state) => state.auth);
   const { cart } = useSelector((state) => state.cart);
 
   const email = new URLSearchParams(location.search).get("email");
-  const redirect =
-    new URLSearchParams(location.search).get("redirect") || "/";
+  const redirect = new URLSearchParams(location.search).get("redirect") || "/";
   const isCheckoutRedirect = redirect.includes("checkout");
 
   useEffect(() => {

@@ -3,11 +3,8 @@ import Hero from "../components/Layout/Hero";
 import GenderCollectionSection from "../components/Products/GenderCollectionSection";
 import NewArrivals from "../components/Products/NewArrivals";
 import ProductDetails from "../components/Products/ProductDetails";
-import ProductGrid from "../components/Products/ProductGrid";
-import FeaturedCollection from "../components/Products/FeaturedCollection";
 import FeaturesSection from "../components/Products/FeaturesSection";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchProductByFilters } from "../redux/slices/productsSlice";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 
 const Home = () => {
@@ -44,7 +41,7 @@ const Home = () => {
   return (
     <div>
       <Hero image={homeContent?.heroImage} />
- 
+
       <GenderCollectionSection
         menImage={homeContent?.menCollectionImage}
         womenImage={homeContent?.womenCollectionImage}

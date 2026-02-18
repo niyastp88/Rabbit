@@ -97,132 +97,181 @@ const FilterSidebar = () => {
     updateURLParams(newFilters);
   };
 
-  return (
-    <div className="p-4">
-      <h3 className="text-xl font-medium text-gray-800 mb-4">Filter</h3>
-      {/* Category Filter */}
-      <div className="mb-6">
-        <label className="block text-gray-600 font-medium mb-2">Category</label>
-        {categories.map((category) => (
-          <div key={category._id} className="flex items-center mb-1">
-            <input
-              type="radio"
-              name="category"
-              value={category.name}
-              onChange={handleFilterChange}
-              checked={filters.category === category.name}
-              className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
-            />
-            <span className="text-gray-700">{category.name}</span>
-          </div>
-        ))}
-      </div>
-      {/* Gender Filter */}
-      <div className="mb-6">
-        <label className="block text-gray-600 font-medium mb-2">Gender</label>
-        {genders.map((gender) => (
-          <div key={gender} className="flex items-center mb-1">
-            <input
-              type="radio"
-              name="gender"
-              value={gender}
-              onChange={handleFilterChange}
-              checked={filters.gender === gender}
-              className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
-            />
-            <span className="text-gray-700">{gender}</span>
-          </div>
-        ))}
-      </div>
-      {/* Color Filter */}
-      <div className="mb-6">
-        <label className="block text-gray-600 font-medium mb-2">Color</label>
-        {colors.map((color) => (
-          <div key={color} className="flex items-center mb-1">
-            <input
-              type="checkbox"
-              name="color"
-              value={color}
-              onChange={handleFilterChange}
-              checked={filters.color.includes(color)}
-              className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
-            />
-            <span className="text-gray-700">{color}</span>
-          </div>
-        ))}
-      </div>
-      {/* Size Filter */}
-      <div className="mb-6">
-        <label className="block text-gray-600 font-medium mb-2">Size</label>
-        {sizes.map((size) => (
-          <div key={size} className="flex items-center mb-1">
-            <input
-              type="checkbox"
-              name="size"
-              value={size}
-              onChange={handleFilterChange}
-              checked={filters.size.includes(size)}
-              className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
-            />
-            <span className="text-gray-700">{size}</span>
-          </div>
-        ))}
-      </div>
-      {/* Material Filter */}
-      <div className="mb-6">
-        <label className="block text-gray-600 font-medium mb-2">Material</label>
-        {materials.map((material) => (
-          <div key={material._id} className="flex items-center mb-1">
-            <input
-              type="checkbox"
-              name="material"
-              value={material.name}
-              onChange={handleFilterChange}
-              checked={filters.material.includes(material.name)}
-              className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
-            />
-            <span className="text-gray-700">{material.name}</span>
-          </div>
-        ))}
-      </div>
-      {/* Brand Filter */}
-      <div className="mb-6">
-        <label className="block text-gray-600 font-medium mb-2">Brand</label>
-        {brands.map((brand) => (
-          <div key={brand._id} className="flex items-center mb-1">
-            <input
-              type="checkbox"
-              name="brand"
-              value={brand.name}
-              onChange={handleFilterChange}
-              checked={filters.brand.includes(brand.name)}
-              className="mr-2 h-4 w-4 text-blue-500 focus:ring-blue-400 border-gray-300"
-            />
-            <span className="text-gray-700">{brand.name}</span>
-          </div>
-        ))}
-      </div>
-      {/* Price Range Filter */}
-      <div className="mb-8">
-        <label className="block text-gray-600 font-medium mb-2">
-          Price Range
-        </label>
-        <input
-          type="range"
-          name="priceRange"
-          min={0}
-          max={1000}
-          value={priceRange[1]}
-          onChange={handlePriceChange}
-          className="w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer"
-        />
-        <div className="flex justify-between text-gray-600 mt-2">
-          <span>₹0</span>
-          <span>₹{priceRange[1]}</span>
-        </div>
-      </div>
+ return (
+  <div className="h-screen flex flex-col bg-white border-r">
+
+    {/* Header */}
+    <div className="p-4 border-b sticky top-0 bg-white z-10">
+      <h3 className="text-xl font-semibold text-gray-800">Filters</h3>
     </div>
-  );
+
+    {/* Scrollable Content */}
+    <div className="flex-1 overflow-y-auto p-4 space-y-6">
+
+      {/* Category */}
+      <details className="group">
+        <summary className="cursor-pointer font-medium text-gray-700 flex justify-between items-center">
+          Category
+          <span className="group-open:rotate-180 transition">⌄</span>
+        </summary>
+        <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-2">
+          {categories.map((category) => (
+            <label key={category._id} className="flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="category"
+                value={category.name}
+                onChange={handleFilterChange}
+                checked={filters.category === category.name}
+                className="accent-black"
+              />
+              {category.name}
+            </label>
+          ))}
+        </div>
+      </details>
+
+      {/* Gender */}
+      <details className="group">
+        <summary className="cursor-pointer font-medium text-gray-700 flex justify-between items-center">
+          Gender
+          <span className="group-open:rotate-180 transition">⌄</span>
+        </summary>
+        <div className="mt-3 space-y-2">
+          {genders.map((gender) => (
+            <label key={gender} className="flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="gender"
+                value={gender}
+                onChange={handleFilterChange}
+                checked={filters.gender === gender}
+                className="accent-black"
+              />
+              {gender}
+            </label>
+          ))}
+        </div>
+      </details>
+
+      {/* Color */}
+      <details className="group">
+        <summary className="cursor-pointer font-medium text-gray-700 flex justify-between items-center">
+          Color
+          <span className="group-open:rotate-180 transition">⌄</span>
+        </summary>
+        <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-2">
+          {colors.map((color) => (
+            <label key={color} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="color"
+                value={color}
+                onChange={handleFilterChange}
+                checked={filters.color.includes(color)}
+                className="accent-black"
+              />
+              {color}
+            </label>
+          ))}
+        </div>
+      </details>
+
+      {/* Size */}
+      <details className="group">
+        <summary className="cursor-pointer font-medium text-gray-700 flex justify-between items-center">
+          Size
+          <span className="group-open:rotate-180 transition">⌄</span>
+        </summary>
+        <div className="mt-3 space-y-2">
+          {sizes.map((size) => (
+            <label key={size} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="size"
+                value={size}
+                onChange={handleFilterChange}
+                checked={filters.size.includes(size)}
+                className="accent-black"
+              />
+              {size}
+            </label>
+          ))}
+        </div>
+      </details>
+
+      {/* Brand */}
+      <details className="group">
+        <summary className="cursor-pointer font-medium text-gray-700 flex justify-between items-center">
+          Brand
+          <span className="group-open:rotate-180 transition">⌄</span>
+        </summary>
+        <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-2">
+          {brands.map((brand) => (
+            <label key={brand._id} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="brand"
+                value={brand.name}
+                onChange={handleFilterChange}
+                checked={filters.brand.includes(brand.name)}
+                className="accent-black"
+              />
+              {brand.name}
+            </label>
+          ))}
+        </div>
+      </details>
+
+      {/* Material */}
+      <details className="group">
+        <summary className="cursor-pointer font-medium text-gray-700 flex justify-between items-center">
+          Material
+          <span className="group-open:rotate-180 transition">⌄</span>
+        </summary>
+        <div className="mt-3 space-y-2 max-h-48 overflow-y-auto pr-2">
+          {materials.map((material) => (
+            <label key={material._id} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                name="material"
+                value={material.name}
+                onChange={handleFilterChange}
+                checked={filters.material.includes(material.name)}
+                className="accent-black"
+              />
+              {material.name}
+            </label>
+          ))}
+        </div>
+      </details>
+
+      {/* Price */}
+      <details open className="group">
+        <summary className="cursor-pointer font-medium text-gray-700 flex justify-between items-center">
+          Price
+          <span className="group-open:rotate-180 transition">⌄</span>
+        </summary>
+        <div className="mt-4">
+          <input
+            type="range"
+            min={0}
+            max={1000}
+            value={priceRange[1]}
+            onChange={handlePriceChange}
+            className="w-full accent-black"
+          />
+          <div className="flex justify-between text-sm text-gray-500 mt-2">
+            <span>₹0</span>
+            <span>₹{priceRange[1]}</span>
+          </div>
+        </div>
+      </details>
+
+    </div>
+  </div>
+);
+
 };
 
 export default FilterSidebar;

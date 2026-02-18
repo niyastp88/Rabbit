@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define schema for product brands
 const brandSchema = new mongoose.Schema(
   {
     name: {
@@ -11,7 +12,7 @@ const brandSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Brand", brandSchema);

@@ -9,9 +9,7 @@ import { toast } from "sonner";
 
 const MaterialManagement = () => {
   const dispatch = useDispatch();
-  const { materials, loading } = useSelector(
-    (state) => state.materials
-  );
+  const { materials, loading } = useSelector((state) => state.materials);
 
   const [name, setName] = useState("");
 
@@ -45,9 +43,7 @@ const MaterialManagement = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">
-        Material Management
-      </h2>
+      <h2 className="text-2xl font-bold mb-4">Material Management</h2>
 
       {/* Add Material */}
       <form onSubmit={handleSubmit} className="flex gap-3 mb-6">
@@ -58,10 +54,7 @@ const MaterialManagement = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 rounded"
-        >
+        <button type="submit" className="bg-blue-600 text-white px-4 rounded">
           Add
         </button>
       </form>
@@ -69,21 +62,17 @@ const MaterialManagement = () => {
       {/* List Materials */}
       {loading ? (
         <div className="space-y-4 animate-pulse">
-
-    
-
-    {/* List Skeleton */}
-    {[1,2,3,4,5].map((item) => (
-      <div
-        key={item}
-        className="flex justify-between items-center border p-3 rounded"
-      >
-        <div className="h-4 w-40 bg-gray-200 rounded"></div>
-        <div className="h-8 w-20 bg-gray-200 rounded"></div>
-      </div>
-    ))}
-
-  </div>
+          {/* List Skeleton */}
+          {[1, 2, 3, 4, 5].map((item) => (
+            <div
+              key={item}
+              className="flex justify-between items-center border p-3 rounded"
+            >
+              <div className="h-4 w-40 bg-gray-200 rounded"></div>
+              <div className="h-8 w-20 bg-gray-200 rounded"></div>
+            </div>
+          ))}
+        </div>
       ) : (
         <ul className="space-y-2">
           {materials.map((mat) => (

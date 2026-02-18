@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define schema for product categories
 const categorySchema = new mongoose.Schema(
   {
     name: {
@@ -11,7 +12,7 @@ const categorySchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Category", categorySchema);

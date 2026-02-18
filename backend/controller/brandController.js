@@ -1,5 +1,6 @@
 const Brand = require("../models/Brand");
 
+// Create new brand
 exports.createBrand = async (req, res) => {
   try {
     const { name } = req.body;
@@ -29,16 +30,18 @@ exports.createBrand = async (req, res) => {
   }
 };
 
+// Get all brands
 exports.getBrands = async (req, res) => {
   try {
     const brands = await Brand.find().sort({ name: 1 });
-    res.json(brands);
+    res.status(200).json(brands);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+// Delete brand by ID
 exports.deleteBrand = async (req, res) => {
   try {
     const brand = await Brand.findById(req.params.id);
@@ -51,7 +54,7 @@ exports.deleteBrand = async (req, res) => {
 
     await brand.deleteOne();
 
-    res.json({
+    res.status(200).json({
       message: "Brand deleted successfully",
     });
   } catch (error) {

@@ -27,7 +27,7 @@ const HomeContentManagement = () => {
     const fetchContent = async () => {
       try {
         const { data } = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/home-content`
+          `${import.meta.env.VITE_BACKEND_URL}/api/home-content`,
         );
         if (data) setContent(data);
       } catch (error) {
@@ -52,7 +52,7 @@ const HomeContentManagement = () => {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
 
       setContent((prev) => ({
@@ -78,7 +78,7 @@ const HomeContentManagement = () => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
 
       toast.success("Home page updated successfully");
@@ -99,35 +99,27 @@ const HomeContentManagement = () => {
             src={content.heroImage}
             alt="Hero"
             className="w-64 h-40 object-cover rounded-lg border shadow-sm mb-3"
-
           />
         )}
         <input
           type="file"
-          onChange={(e) =>
-            uploadImage(e.target.files[0], "heroImage")
-          }
+          onChange={(e) => uploadImage(e.target.files[0], "heroImage")}
         />
       </div>
 
       {/* MEN COLLECTION */}
       <div className="mb-6">
-        <label className="block font-medium mb-2">
-          Men's Collection Image
-        </label>
+        <label className="block font-medium mb-2">Men's Collection Image</label>
         {content.menCollectionImage && (
           <img
             src={content.menCollectionImage}
             alt="Men"
             className="w-64 h-40 object-cover rounded-lg border shadow-sm mb-3"
-
           />
         )}
         <input
           type="file"
-          onChange={(e) =>
-            uploadImage(e.target.files[0], "menCollectionImage")
-          }
+          onChange={(e) => uploadImage(e.target.files[0], "menCollectionImage")}
         />
       </div>
 
@@ -141,7 +133,6 @@ const HomeContentManagement = () => {
             src={content.womenCollectionImage}
             alt="Women"
             className="w-64 h-40 object-cover rounded-lg border shadow-sm mb-3"
-
           />
         )}
         <input

@@ -8,15 +8,17 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 require("dotenv").config();
 
+// Register a new user and send OTP
 exports.registerUser = async (req, res) => {
   const { name, email, password, mobile } = req.body;
 
   try {
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
-    // Strong password check
+    // Validate strong password
     const strongPassword =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
@@ -27,12 +29,14 @@ exports.registerUser = async (req, res) => {
       });
     }
 
-    // hash password before temporary save
+    // Hash password before saving
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
+    // Save or update pending user
     await PendingUser.findOneAndUpdate(
       { email },
       {
@@ -46,16 +50,16 @@ exports.registerUser = async (req, res) => {
       { upsert: true },
     );
 
-    // 📩 Send OTP email
-
+    // Send OTP email
     await sendEmail(email, otp);
 
-    res.json({ message: "OTP sent to email" });
+    return res.status(200).json({ message: "OTP sent to email" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
 };
 
+// Verify email OTP and create user
 exports.verifyEmailOTP = async (req, res) => {
   try {
     const { email, otp } = req.body;
@@ -86,7 +90,7 @@ exports.verifyEmailOTP = async (req, res) => {
       });
     }
 
-    // 🔥 Extra Safety: check again if user already exists
+    // Check again if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       await PendingUser.deleteOne({ email });
@@ -95,15 +99,15 @@ exports.verifyEmailOTP = async (req, res) => {
       });
     }
 
-    // ✅ Create real user
+    // Create new user
     const user = await User.create({
       name: pendingUser.name,
       email: pendingUser.email,
-      password: pendingUser.password, // already hashed
+      password: pendingUser.password,
       mobile: pendingUser.mobile,
     });
 
-    // 🧹 Delete pending record
+    // Delete pending record
     await PendingUser.deleteOne({ email });
 
     const payload = {
@@ -117,8 +121,7 @@ exports.verifyEmailOTP = async (req, res) => {
       expiresIn: "40h",
     });
 
-    // ✅ Final Response (complete & clean)
-    return res.status(200).json({
+    return res.status(201).json({
       message: "Email verified successfully",
       user: {
         _id: user._id,
@@ -136,6 +139,7 @@ exports.verifyEmailOTP = async (req, res) => {
   }
 };
 
+// Authenticate user and generate token
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -144,19 +148,18 @@ exports.loginUser = async (req, res) => {
     let user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid Credentials" });
     if (user.googleId && !user.password) {
-  return res.status(400).json({
-    message: "Please login using Google",
-  });
-}
+      return res.status(400).json({
+        message: "Please login using Google",
+      });
+    }
     const isMatch = await user.matchPassword(password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid Credentials" });
     if (user.isBlocked) {
-  return res.status(403).json({
-    message: "Your account is blocked by admin",
-  });
-}
-
+      return res.status(403).json({
+        message: "Your account is blocked by admin",
+      });
+    }
 
     //Create JWT Playload
     const playload = { user: { id: user._id, role: user.role } };
@@ -169,7 +172,7 @@ exports.loginUser = async (req, res) => {
       (err, token) => {
         if (err) throw err;
 
-        res.json({
+        res.status(200).json({
           user: {
             _id: user._id,
             name: user.name,
@@ -186,10 +189,12 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+// Get logged-in user profile
 exports.getUserProfile = async (req, res) => {
-  res.json(req.user);
+  res.status(200).json(req.user);
 };
 
+// Send reset password link
 exports.forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
@@ -205,7 +210,7 @@ exports.forgotPassword = async (req, res) => {
     // Generate random token
     const resetToken = crypto.randomBytes(32).toString("hex");
 
-    // Hash token before saving (security)
+    // Hash token before saving
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
@@ -228,7 +233,7 @@ exports.forgotPassword = async (req, res) => {
       `,
     );
 
-    res.json({
+    res.status(200).json({
       message: "Reset link sent to email",
     });
   } catch (error) {
@@ -237,6 +242,7 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
+// Reset user password
 exports.resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
@@ -272,7 +278,7 @@ exports.resetPassword = async (req, res) => {
 
     await user.save();
 
-    res.json({
+    res.status(200).json({
       message: "Password reset successful. Please login.",
     });
   } catch (error) {
@@ -281,6 +287,7 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+// Authenticate user using Google login
 exports.googleAuth = async (req, res) => {
   try {
     const { token } = req.body;
@@ -314,7 +321,7 @@ exports.googleAuth = async (req, res) => {
       expiresIn: "40h",
     });
 
-    res.json({
+    res.status(200).json({
       user: {
         _id: user._id,
         name: user.name,
@@ -328,5 +335,3 @@ exports.googleAuth = async (req, res) => {
     res.status(500).json({ message: "Google login failed" });
   }
 };
-
-

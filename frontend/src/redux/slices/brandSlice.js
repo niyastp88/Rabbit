@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Base API URL for brands
 const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/brands`;
 
 // Fetch all brands
@@ -13,10 +14,10 @@ export const fetchBrands = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
-// Create brand
+// Create a new brand (Admin only)
 export const createBrand = createAsyncThunk(
   "brands/createBrand",
   async (name, { rejectWithValue }) => {
@@ -28,16 +29,16 @@ export const createBrand = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
-// Delete brand
+// Delete brand by ID (Admin only)
 export const deleteBrand = createAsyncThunk(
   "brands/deleteBrand",
   async (id, { rejectWithValue }) => {
@@ -51,7 +52,7 @@ export const deleteBrand = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
 const brandSlice = createSlice({
@@ -70,7 +71,7 @@ const brandSlice = createSlice({
       })
       .addCase(fetchBrands.fulfilled, (state, action) => {
         state.loading = false;
-        state.brands = action.payload;   // ✅ FIX
+        state.brands = action.payload;
       })
       .addCase(fetchBrands.rejected, (state, action) => {
         state.loading = false;
@@ -79,14 +80,14 @@ const brandSlice = createSlice({
 
       // CREATE
       .addCase(createBrand.fulfilled, (state, action) => {
-        state.brands.push(action.payload); // ✅ FIX
+        state.brands.push(action.payload);
       })
 
       // DELETE
       .addCase(deleteBrand.fulfilled, (state, action) => {
         state.brands = state.brands.filter(
-          (brand) => brand._id !== action.payload
-        ); // ✅ FIX
+          (brand) => brand._id !== action.payload,
+        );
       });
   },
 });

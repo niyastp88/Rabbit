@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Base API URL for materials
 const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/materials`;
 
-// ✅ Fetch all materials
+// Fetch all material
 export const fetchMaterials = createAsyncThunk(
   "materials/fetchMaterials",
   async (_, { rejectWithValue }) => {
@@ -13,10 +14,10 @@ export const fetchMaterials = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
-// ✅ Create material
+// Create a new material (Admin only)
 export const createMaterial = createAsyncThunk(
   "materials/createMaterial",
   async (name, { rejectWithValue }) => {
@@ -28,16 +29,16 @@ export const createMaterial = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
-// ✅ Delete material
+// Delete a material by ID (Admin only)
 export const deleteMaterial = createAsyncThunk(
   "materials/deleteMaterial",
   async (id, { rejectWithValue }) => {
@@ -51,7 +52,7 @@ export const deleteMaterial = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
 const materialSlice = createSlice({
@@ -85,7 +86,7 @@ const materialSlice = createSlice({
       // DELETE
       .addCase(deleteMaterial.fulfilled, (state, action) => {
         state.materials = state.materials.filter(
-          (mat) => mat._id !== action.payload
+          (mat) => mat._id !== action.payload,
         );
       });
   },

@@ -9,7 +9,7 @@ const AdminHomePage = () => {
 
   const {
     products,
-    total,              // ✅ ADD THIS
+    total,
     loading: productsLoading,
     error: productsError,
   } = useSelector((state) => state.adminProducts);
@@ -33,31 +33,26 @@ const AdminHomePage = () => {
 
       {productsLoading || ordersLoading ? (
         <div className="space-y-8">
-    
-    {/* Top Stats Skeleton */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {[1, 2, 3].map((item) => (
-        <div
-          key={item}
-          className="p-6 bg-white rounded-xl shadow animate-pulse"
-        >
-          <div className="h-5 bg-gray-200 rounded w-1/2 mb-4"></div>
-          <div className="h-8 bg-gray-300 rounded w-1/3"></div>
-          <div className="h-4 bg-gray-200 rounded w-1/4 mt-4"></div>
+          {/* Top Stats Skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="p-6 bg-white rounded-xl shadow animate-pulse"
+              >
+                <div className="h-5 bg-gray-200 rounded w-1/2 mb-4"></div>
+                <div className="h-8 bg-gray-300 rounded w-1/3"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/4 mt-4"></div>
+              </div>
+            ))}
+          </div>
         </div>
-      ))}
-    </div>
-
-    
-
-  </div>
       ) : productsError ? (
         <p className="text-red-500">Error fetching products: {productsError}</p>
       ) : ordersError ? (
         <p className="text-red-500">Error fetching orders: {ordersError}</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          
           {/* REVENUE */}
           <div className="p-4 shadow-md rounded-lg">
             <h2 className="text-xl font-semibold">Revenue</h2>

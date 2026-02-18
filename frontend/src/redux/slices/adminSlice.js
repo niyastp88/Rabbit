@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// fetch all users(admin only)
+// Fetch all users (Admin only)
 export const fetchUser = createAsyncThunk("admin/fetchUser", async () => {
   const response = await axios.get(
     `${import.meta.env.VITE_BACKEND_URL}/api/admin/users`,
@@ -9,12 +9,12 @@ export const fetchUser = createAsyncThunk("admin/fetchUser", async () => {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("userToken")}`,
       },
-    }
+    },
   );
   return response.data;
 });
 
-// Add the create user action
+// Create new user (Admin only)
 export const addUser = createAsyncThunk(
   "admin/addUser",
   async (userData, { rejectWithValue }) => {
@@ -26,16 +26,16 @@ export const addUser = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
-// Update user info
+// Update user role or block status (Admin only)
 
 export const updateUser = createAsyncThunk(
   "admin/updateUser",
@@ -50,20 +50,19 @@ export const updateUser = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data || { message: "Update failed" }
+        error.response?.data || { message: "Update failed" },
       );
     }
-  }
+  },
 );
 
-
-// Delete a user
+// Delete a user (Admin only)
 export const deleteUser = createAsyncThunk("admin/deleteUser", async (id) => {
   await axios.delete(
     `${import.meta.env.VITE_BACKEND_URL}/api/admin/users/${id}`,
@@ -71,12 +70,10 @@ export const deleteUser = createAsyncThunk("admin/deleteUser", async (id) => {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("userToken")}`,
       },
-    }
+    },
   );
   return id;
 });
-
-
 
 const adminSlice = createSlice({
   name: "admin",
@@ -99,7 +96,7 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      
+
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter((user) => user._id !== action.payload);
       })
@@ -109,25 +106,24 @@ const adminSlice = createSlice({
       })
       .addCase(addUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.users.push(action.payload.user); // add a new user to the state
+        state.users.push(action.payload.user);
       })
       .addCase(addUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })
       .addCase(updateUser.fulfilled, (state, action) => {
-  const index = state.users.findIndex(
-    (user) => user._id === action.payload._id
-  );
+        const index = state.users.findIndex(
+          (user) => user._id === action.payload._id,
+        );
 
-  if (index !== -1) {
-    state.users[index] = action.payload;
-  }
-})
-.addCase(updateUser.rejected, (state, action) => {
-  state.error = action.payload?.message;
-});
-
+        if (index !== -1) {
+          state.users[index] = action.payload;
+        }
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.error = action.payload?.message;
+      });
   },
 });
 

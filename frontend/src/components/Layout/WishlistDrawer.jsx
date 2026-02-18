@@ -11,9 +11,7 @@ import { Link } from "react-router";
 const WishlistDrawer = ({ open, toggle }) => {
   const dispatch = useDispatch();
 
-  const { products = [], loading } = useSelector(
-    (state) => state.wishlist
-  );
+  const { products = [], loading } = useSelector((state) => state.wishlist);
   const { user } = useSelector((state) => state.auth);
 
   // 🔹 Always fetch wishlist when drawer opens
@@ -42,9 +40,7 @@ const WishlistDrawer = ({ open, toggle }) => {
         {loading ? (
           <p className="text-center mt-10">Loading...</p>
         ) : products.length === 0 ? (
-          <p className="text-gray-500 text-center mt-10">
-            Wishlist is empty
-          </p>
+          <p className="text-gray-500 text-center mt-10">Wishlist is empty</p>
         ) : (
           products.map((item) => {
             const product = item.product;
@@ -65,35 +61,27 @@ const WishlistDrawer = ({ open, toggle }) => {
                   className="flex items-center gap-4"
                 >
                   <img
-                    src={
-                      product.images?.[0]?.url ||
-                      "/placeholder.png"
-                    }
+                    src={product.images?.[0]?.url || "/placeholder.png"}
                     alt={product.name}
                     className="w-20 h-24 object-cover rounded"
                   />
 
                   <div>
-                    <h3 className="text-sm font-medium">
-                      {product.name}
-                    </h3>
-                    <p className="text-gray-500 text-sm">
-                      ₹ {product.price}
-                    </p>
+                    <h3 className="text-sm font-medium">{product.name}</h3>
+                    <p className="text-gray-500 text-sm">₹ {product.price}</p>
                   </div>
                 </Link>
 
                 <button
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-    dispatch(removeFromWishlist(product._id));
-  }}
->
-  <RiDeleteBinLine className="h-5 w-5 text-red-600" />
-</button>
-
+                    dispatch(removeFromWishlist(product._id));
+                  }}
+                >
+                  <RiDeleteBinLine className="h-5 w-5 text-red-600" />
+                </button>
               </div>
             );
           })

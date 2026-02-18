@@ -1,17 +1,18 @@
 const Material = require("../models/Material");
 
+// Create new material
 exports.createMaterial = async (req, res) => {
   try {
     const { name } = req.body;
 
     if (!name) {
-      return res.status(400).json({ message: "Category name is required" });
+      return res.status(400).json({ message: "material name is required" });
     }
 
     const materialExists = await Material.findOne({ name });
 
     if (materialExists) {
-      return res.status(400).json({ message: "Category already exists" });
+      return res.status(400).json({ message: "material already exists" });
     }
 
     const material = await Material.create({ name });
@@ -29,16 +30,18 @@ exports.createMaterial = async (req, res) => {
   }
 };
 
+// Get all materials
 exports.getMaterials = async (req, res) => {
   try {
     const materials = await Material.find().sort({ name: 1 });
-    res.json(materials);
+    res.status(200).json(materials);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+// Delete material by ID
 exports.deleteMaterial = async (req, res) => {
   try {
     const material = await Material.findById(req.params.id);
@@ -51,7 +54,7 @@ exports.deleteMaterial = async (req, res) => {
 
     await material.deleteOne();
 
-    res.json({
+    res.status(200).json({
       message: "Material deleted successfully",
     });
   } catch (error) {

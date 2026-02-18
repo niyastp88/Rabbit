@@ -9,15 +9,14 @@ const Footer = () => {
   return (
     <footer className="bg-black text-gray-300 pt-16 pb-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 px-6">
-
         {/* BRAND */}
         <div>
           <h2 className="text-2xl font-bold text-white mb-4 tracking-wide">
             ZayanCart
           </h2>
           <p className="text-gray-400 text-sm leading-relaxed">
-            Premium fashion for modern lifestyle. 
-            Quality fabrics, timeless designs, and effortless style.
+            Premium fashion for modern lifestyle. Quality fabrics, timeless
+            designs, and effortless style.
           </p>
         </div>
 
@@ -80,22 +79,13 @@ const Footer = () => {
           <h3 className="text-white text-lg font-semibold mb-4">Connect</h3>
 
           <div className="flex space-x-5 mb-6 text-gray-400">
-            <a
-              href="#"
-              className="hover:text-white transition text-xl"
-            >
+            <a href="#" className="hover:text-white transition text-xl">
               <TbBrandMeta />
             </a>
-            <a
-              href="#"
-              className="hover:text-white transition text-xl"
-            >
+            <a href="#" className="hover:text-white transition text-xl">
               <IoLogoInstagram />
             </a>
-            <a
-              href="#"
-              className="hover:text-white transition text-xl"
-            >
+            <a href="#" className="hover:text-white transition text-xl">
               <RiTwitterXLine />
             </a>
           </div>
@@ -109,7 +99,7 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-800 mt-12 pt-6 text-center text-gray-500 text-sm">
-         {new Date().getFullYear()} ZayanCart. All rights reserved.
+        {new Date().getFullYear()} ZayanCart. All rights reserved.
       </div>
     </footer>
   );

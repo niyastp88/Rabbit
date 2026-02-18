@@ -1,5 +1,9 @@
 const express = require("express");
+
+// Import authentication and authorization middleware
 const { protect, admin } = require("../middleware/authMiddleware");
+
+// Import admin controller functions
 const {
   getAllUsers,
   createUser,
@@ -10,18 +14,16 @@ const {
 
 const router = express.Router();
 
-//Get all users (Admin only)
-
+// Get all users (Admin only)
 router.get("/", protect, admin, getAllUsers);
 
-// Add a new user(admin only)
+// Create new user (Admin only)
 router.post("/", protect, admin, createUser);
 
-// Updae user info(admin only)
+// Update user by ID (Admin only)
 router.put("/:id", protect, admin, updateUserByAdmin);
 
-// Delete a user
+// Delete user by ID (Admin only)
 router.delete("/:id", protect, admin, deleteUser);
-
 
 module.exports = router;

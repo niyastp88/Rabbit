@@ -33,7 +33,9 @@ const PaymentFailedPage = () => {
       </div>
 
       <div className="mt-10 text-sm text-gray-500">
-        <p>If amount was debited, it will be refunded within 5–7 working days.</p>
+        <p>
+          If amount was debited, it will be refunded within 5–7 working days.
+        </p>
         <p>For help, contact support.</p>
       </div>
     </div>

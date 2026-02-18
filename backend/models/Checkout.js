@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define schema for individual checkout items
 const checkoutItemSchema = new mongoose.Schema(
   {
     productId: {
@@ -28,7 +29,7 @@ const checkoutItemSchema = new mongoose.Schema(
   },
   {
     _id: false,
-  }
+  },
 );
 
 const checkoutSchema = new mongoose.Schema(
@@ -40,13 +41,13 @@ const checkoutSchema = new mongoose.Schema(
     },
     checkoutItems: [checkoutItemSchema],
     shippingAddress: {
-      firstname:{type:String,required:true},
-      lastname:{type:String},
+      firstname: { type: String, required: true },
+      lastname: { type: String },
       address: { type: String, required: true },
       city: { type: String, required: true },
       postalcode: { type: String, required: true },
       state: { type: String, required: true },
-      phone:{type:String,required:true},
+      phone: { type: String, required: true },
     },
     paymentMethod: {
       type: String,
@@ -68,7 +69,7 @@ const checkoutSchema = new mongoose.Schema(
       default: "pending",
     },
     paymentDetails: {
-      type: mongoose.Schema.Types.Mixed, // store payment-related details(transaction ID,paypal response)
+      type: mongoose.Schema.Types.Mixed,
     },
     isFinalized: {
       type: Boolean,
@@ -80,7 +81,7 @@ const checkoutSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("checkout", checkoutSchema);

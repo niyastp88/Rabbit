@@ -5,26 +5,20 @@ const Order = require("../models/Order");
 const razorpay = require("../utils/razorpay");
 const crypto = require("crypto");
 
+// Create new checkout session
 exports.createCheckout = async (req, res) => {
   const { checkoutItems, shippingAddress, paymentMethod, totalPrice } =
     req.body;
-    
+
   if (!checkoutItems) {
     return res.status(400).json({ message: "no items in checkout" });
   }
   if (!shippingAddress) {
     return res.status(400).json({ message: "Shipping address required" });
   }
-  const {
-    firstname,
-    lastName,
-    address,
-    city,
-    postalcode,
-    state,
-    phone,
-  } = shippingAddress;
-  
+  const { firstname, lastName, address, city, postalcode, state, phone } =
+    shippingAddress;
+
   if (!firstname?.trim())
     return res.status(400).json({ message: "First name is required" });
 
@@ -43,7 +37,6 @@ exports.createCheckout = async (req, res) => {
   if (!state?.trim())
     return res.status(400).json({ message: "State is required" });
 
-  
   const phoneRegex = /^[0-9]{10}$/;
   if (!phoneRegex.test(phone)) {
     return res.status(400).json({
@@ -51,8 +44,6 @@ exports.createCheckout = async (req, res) => {
     });
   }
 
-  
-  
   try {
     // Create a new checkout session
     const newCheckout = await Checkout.create({
@@ -74,6 +65,7 @@ exports.createCheckout = async (req, res) => {
   }
 };
 
+// Mark checkout as paid
 exports.markCheckoutPaid = async (req, res) => {
   const { paymentStatus, paymentDetails } = req.body;
 
@@ -100,6 +92,7 @@ exports.markCheckoutPaid = async (req, res) => {
   }
 };
 
+// Finalize checkout and create order
 exports.finalizeCheckout = async (req, res) => {
   try {
     const checkout = await Checkout.findById(req.params.id);
@@ -171,6 +164,7 @@ exports.finalizeCheckout = async (req, res) => {
   }
 };
 
+// Create Razorpay order
 exports.createRazorpayOrder = async (req, res) => {
   const checkout = await Checkout.findById(req.params.id);
   if (!checkout) {
@@ -187,6 +181,7 @@ exports.createRazorpayOrder = async (req, res) => {
   res.json(order);
 };
 
+// Verify Razorpay payment
 exports.verifyRazorpayPayment = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
     req.body;

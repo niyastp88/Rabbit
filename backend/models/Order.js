@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// Define schema for individual order items
 const orderItemSchema = new mongoose.Schema(
   {
     productId: {
@@ -31,15 +32,15 @@ const orderItemSchema = new mongoose.Schema(
     returnComment: String,
     returnRequestedAt: Date,
     returnStatus: {
-  type: String,
-  enum: ["pending", "approved", "rejected"],
-  default: "pending",
-},
-
+      type: String,
+      enum: ["pending", "approved", "rejected"],
+      default: "pending",
+    },
   },
-  { _id: false }
+  { _id: false },
 );
 
+// Define schema for orders
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -49,13 +50,13 @@ const orderSchema = new mongoose.Schema(
     },
     orderItems: [orderItemSchema],
     shippingAddress: {
-      firstname:{type:String,required:true},
-      lastname:{type:String},
+      firstname: { type: String, required: true },
+      lastname: { type: String },
       address: { type: String, required: true },
       city: { type: String, required: true },
       postalcode: { type: String, required: true },
       state: { type: String, required: true },
-      phone:{type:String,required:true},
+      phone: { type: String, required: true },
     },
     paymentMethod: {
       type: String,
@@ -89,7 +90,7 @@ const orderSchema = new mongoose.Schema(
       default: "Processing",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("order", orderSchema);

@@ -11,26 +11,21 @@ import axios from "axios";
 const CartContents = ({ cart, userId, guestId }) => {
   const dispatch = useDispatch();
 
-  // 🔹 store latest stock per product
   const [stockMap, setStockMap] = useState({});
 
-  /**
-   * 🔥 Fetch latest product stock for cart items
-   * (cart change aakumbol mathram)
-   */
   useEffect(() => {
     const fetchStocks = async () => {
       try {
         const results = await Promise.all(
           cart.products.map(async (item) => {
             const res = await axios.get(
-              `${import.meta.env.VITE_BACKEND_URL}/api/products/${item.productId}`
+              `${import.meta.env.VITE_BACKEND_URL}/api/products/${item.productId}`,
             );
             return {
               productId: item.productId,
               countInStock: res.data.countInStock,
             };
-          })
+          }),
         );
 
         const map = {};
@@ -40,7 +35,7 @@ const CartContents = ({ cart, userId, guestId }) => {
 
         setStockMap(map);
 
-        // 🔥 auto adjust quantity if stock reduced
+        //  auto adjust quantity if stock reduced
         cart.products.forEach((item) => {
           const stock = map[item.productId];
           if (stock !== undefined && stock > 0 && item.quantity > stock) {
@@ -52,7 +47,7 @@ const CartContents = ({ cart, userId, guestId }) => {
                 color: item.color,
                 userId,
                 guestId,
-              })
+              }),
             );
           }
         });
@@ -66,7 +61,7 @@ const CartContents = ({ cart, userId, guestId }) => {
     }
   }, [cart.products, dispatch, userId, guestId]);
 
-  // 🔹 quantity handler
+  //  quantity handler
   const handleQuantityChange = (productId, delta, quantity, size, color) => {
     const stock = stockMap[productId] ?? 0;
     let newQuantity = quantity + delta;
@@ -85,7 +80,7 @@ const CartContents = ({ cart, userId, guestId }) => {
         color,
         userId,
         guestId,
-      })
+      }),
     );
   };
 
@@ -143,7 +138,7 @@ const CartContents = ({ cart, userId, guestId }) => {
                         -1,
                         product.quantity,
                         product.size,
-                        product.color
+                        product.color,
                       )
                     }
                     className="border rounded px-2 py-1 text-xl font-medium disabled:opacity-40"
@@ -165,7 +160,7 @@ const CartContents = ({ cart, userId, guestId }) => {
                         1,
                         product.quantity,
                         product.size,
-                        product.color
+                        product.color,
                       )
                     }
                     className="border rounded px-2 py-1 text-xl font-medium disabled:opacity-40"
@@ -185,7 +180,7 @@ const CartContents = ({ cart, userId, guestId }) => {
                   handleRemoveFromCart(
                     product.productId,
                     product.size,
-                    product.color
+                    product.color,
                   )
                 }
               >

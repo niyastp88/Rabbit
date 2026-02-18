@@ -1,8 +1,7 @@
 const Cart = require("../models/Cart");
 const Product = require("../models/Product");
 
-// Helper function to get a cart by user ID or guest ID
-
+// Helper function to get cart by user ID or guest ID
 const getCart = async (userId, guestId) => {
   if (userId) {
     return await Cart.findOne({ user: userId });
@@ -12,17 +11,20 @@ const getCart = async (userId, guestId) => {
   return null;
 };
 
+// Add product to cart
 exports.addToCart = async (req, res) => {
   const { productId, quantity, size, color, guestId, userId } = req.body;
   try {
+    // Check if product exists
     const product = await Product.findById(productId);
     if (!product) return res.status(404).json({ message: "Product not found" });
-    // Detrmine if the user is logged in or guest
+
+    // Determine if cart exists
     let cart = await getCart(userId, guestId);
 
     // if the cart exists update it
-
     if (cart) {
+      // Check if product already exists in cart
       const productIndex = cart.products.findIndex(
         (p) =>
           p.productId.toString() === productId &&
@@ -80,6 +82,7 @@ exports.addToCart = async (req, res) => {
   }
 };
 
+// Update cart item quantity
 exports.updateCartItem = async (req, res) => {
   const { productId, quantity, size, color, guestId, userId } = req.body;
   try {
@@ -114,6 +117,7 @@ exports.updateCartItem = async (req, res) => {
   }
 };
 
+// Remove product from cart
 exports.removeFromCart = async (req, res) => {
   const { productId, size, color, guestId, userId } = req.body;
   try {
@@ -142,13 +146,13 @@ exports.removeFromCart = async (req, res) => {
   }
 };
 
+// Get cart by user or guest
 exports.getCartByUser = async (req, res) => {
   const { userId, guestId } = req.query;
 
   try {
     let cart = await getCart(userId, guestId);
 
-    
     if (!cart) {
       cart = await Cart.create({
         user: userId || undefined,
@@ -159,14 +163,13 @@ exports.getCartByUser = async (req, res) => {
     }
 
     return res.status(200).json(cart);
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
   }
 };
 
-
+// Merge guest cart into user cart
 exports.mergeGuestCart = async (req, res) => {
   const { guestId } = req.body;
 

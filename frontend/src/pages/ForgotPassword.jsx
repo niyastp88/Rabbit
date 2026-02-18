@@ -7,21 +7,19 @@ const ForgotPassword = () => {
   const [sent, setSent] = useState(false);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  await axios.post(
-    `${import.meta.env.VITE_BACKEND_URL}/api/users/forgot-password`,
-    { email }
-  );
+    await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/users/forgot-password`,
+      { email },
+    );
 
-  setSent(true);
-};
-
+    setSent(true);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-
         <div className="text-center mb-6">
           <h2 className="text-2xl font-bold">Forgot Password</h2>
           <p className="text-sm text-gray-500 mt-2">
@@ -31,7 +29,6 @@ const ForgotPassword = () => {
 
         {!sent ? (
           <form onSubmit={handleSubmit} className="space-y-4">
-
             <input
               type="email"
               value={email}
@@ -47,7 +44,6 @@ const ForgotPassword = () => {
             >
               Send Reset Link
             </button>
-
           </form>
         ) : (
           <div className="text-center bg-green-50 border border-green-200 p-4 rounded-lg">
@@ -63,7 +59,6 @@ const ForgotPassword = () => {
             Back to Login
           </Link>
         </p>
-
       </div>
     </div>
   );

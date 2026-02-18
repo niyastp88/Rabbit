@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Base API URL for categories
 const API_URL = `${import.meta.env.VITE_BACKEND_URL}/api/categories`;
 
-// ✅ Fetch all categories
+// Fetch all categories
 export const fetchCategories = createAsyncThunk(
   "categories/fetchCategories",
   async (_, { rejectWithValue }) => {
@@ -13,10 +14,10 @@ export const fetchCategories = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
-// ✅ Create category
+// Create a new category (Admin only)
 export const createCategory = createAsyncThunk(
   "categories/createCategory",
   async (name, { rejectWithValue }) => {
@@ -28,16 +29,16 @@ export const createCategory = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
-// ✅ Delete category
+// Delete category by ID (Admin only)
 export const deleteCategory = createAsyncThunk(
   "categories/deleteCategory",
   async (id, { rejectWithValue }) => {
@@ -51,7 +52,7 @@ export const deleteCategory = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error.response?.data?.message);
     }
-  }
+  },
 );
 
 const categorySlice = createSlice({
@@ -85,7 +86,7 @@ const categorySlice = createSlice({
       // DELETE
       .addCase(deleteCategory.fulfilled, (state, action) => {
         state.categories = state.categories.filter(
-          (cat) => cat._id !== action.payload
+          (cat) => cat._id !== action.payload,
         );
       });
   },

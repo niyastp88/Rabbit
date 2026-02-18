@@ -23,7 +23,7 @@ const Navbar = () => {
   const { cart } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
   const { products: wishlistProducts = [] } = useSelector(
-    (state) => state.wishlist
+    (state) => state.wishlist,
   );
 
   // 🔹 Fetch wishlist on login
@@ -81,10 +81,7 @@ const Navbar = () => {
 
           {/* ❤️ Wishlist */}
           {user && (
-            <button
-              onClick={() => setWishlistOpen(true)}
-              className="relative"
-            >
+            <button onClick={() => setWishlistOpen(true)} className="relative">
               <HiOutlineHeart className="h-6 w-6 text-gray-700" />
               {wishlistCount > 0 && (
                 <span className="absolute -top-1 bg-yellow-400 text-white text-xs rounded-full px-2 py-0.5">

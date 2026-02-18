@@ -12,16 +12,16 @@ export const fetchAllOrders = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
-// update order delivery status
+// Update order delivery status (Admin only)
 export const updateOrderStatus = createAsyncThunk(
   "adminOrders/updateOrderStatus",
   async ({ id, status }, { rejectWithValue }) => {
@@ -33,16 +33,16 @@ export const updateOrderStatus = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
-// Delete an order
+// Delete an order (Admin only)
 export const deleteOrder = createAsyncThunk(
   "adminOrders/deleteOrder",
   async (id, { rejectWithValue }) => {
@@ -54,13 +54,13 @@ export const deleteOrder = createAsyncThunk(
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        }
+        },
       );
       return id;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  }
+  },
 );
 
 const adminOrderSlice = createSlice({
@@ -90,7 +90,7 @@ const adminOrderSlice = createSlice({
         }, 0);
         state.totalSales = totalSales;
       })
-      .addCase(fetchAllOrders.rejected, (state) => {
+      .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload.message;
       })
@@ -99,7 +99,7 @@ const adminOrderSlice = createSlice({
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
         const updatedOrder = action.payload;
         const orderIndex = state.orders.findIndex(
-          (order) => order._id === updatedOrder._id
+          (order) => order._id === updatedOrder._id,
         );
         if (orderIndex !== -1) {
           state.orders[orderIndex] = updatedOrder;
@@ -109,7 +109,7 @@ const adminOrderSlice = createSlice({
       // Delete Order
       .addCase(deleteOrder.fulfilled, (state, action) => {
         state.orders = state.orders.filter(
-          (order) => order._id !== action.payload
+          (order) => order._id !== action.payload,
         );
       });
   },

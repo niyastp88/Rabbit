@@ -1,5 +1,7 @@
+// Import mongoose package
 const mongoose = require("mongoose");
 
+// Define schema for pending users during registration process
 const pendingUserSchema = new mongoose.Schema(
   {
     name: String,
@@ -9,7 +11,7 @@ const pendingUserSchema = new mongoose.Schema(
     otp: String,
     otpExpires: Date,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("PendingUser", pendingUserSchema);
