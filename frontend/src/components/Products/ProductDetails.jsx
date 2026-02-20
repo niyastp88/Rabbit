@@ -228,6 +228,11 @@ const ProductDetails = ({ productId, home }) => {
                   >
                     +
                   </button>
+                  {selectedProduct.countInStock < 5 && selectedProduct.countInStock > 0 && (
+  <span className="inline-block text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md ml-2">
+    Only {selectedProduct.countInStock} left
+  </span>
+)}
                 </div>
               </div>
 

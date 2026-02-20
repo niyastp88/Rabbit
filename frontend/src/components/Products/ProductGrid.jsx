@@ -143,6 +143,12 @@ const ProductGrid = ({ products, loading, error }) => {
                 ) : (
                   <span className="text-xs text-gray-400 ml-1">No reviews</span>
                 )}
+
+               {product.countInStock < 5 && product.countInStock > 0 && (
+  <span className="inline-block text-xs font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-md ml-2">
+    Only {product.countInStock} left
+  </span>
+)}
               </div>
 
               <p className="text-gray-500 font-medium text-sm">
