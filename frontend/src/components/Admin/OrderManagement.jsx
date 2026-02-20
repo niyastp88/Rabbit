@@ -12,18 +12,20 @@ const OrderManagement = () => {
   const navigate = useNavigate();
 
   const { user } = useSelector((state) => state.auth);
-  const { orders, loading, error } = useSelector((state) => state.adminOrders);
+  const { orders, loading, error,pages } = useSelector((state) => state.adminOrders);
 
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [page, setPage] = useState(1);
+const limit = 10;
 
   useEffect(() => {
     if (!user || user.role !== "admin") {
       navigate("/");
     } else {
-      dispatch(fetchAllOrders());
+      dispatch(fetchAllOrders({ page, limit }));
       dispatch(fetchReturnRequests());
     }
-  }, [dispatch, user, navigate]);
+  }, [dispatch, user, navigate,page]);
   const handleStatusChange = (orderId, status) => {
     dispatch(updateOrderStatus({ id: orderId, status }));
   };
@@ -99,7 +101,7 @@ const OrderManagement = () => {
                   #{order._id}
                 </td>
                 <td className="p-4">{order.user.name}</td>
-                <td className="p-4">${order.totalPrice.toFixed(2)}</td>
+                <td className="p-4">₹ {order.totalPrice.toFixed(2)}</td>
                 <td className="px-4">
                   <select
                     value={order.status}
@@ -155,6 +157,48 @@ const OrderManagement = () => {
           )}
         </tbody>
       </table>
+
+      {orders.length > 0 && (
+  <div className="flex justify-center items-center gap-2 mt-6">
+    <button
+      disabled={page === 1}
+      onClick={() => setPage(page - 1)}
+      className={`px-3 py-1 border rounded ${
+        page === 1
+          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+          : "hover:bg-black hover:text-white"
+      }`}
+    >
+      Prev
+    </button>
+
+    {[...Array(pages)].map((_, i) => (
+      <button
+        key={i}
+        onClick={() => setPage(i + 1)}
+        className={`px-3 py-1 border rounded ${
+          page === i + 1
+            ? "bg-black text-white"
+            : "hover:bg-black hover:text-white"
+        }`}
+      >
+        {i + 1}
+      </button>
+    ))}
+
+    <button
+      disabled={page === pages}
+      onClick={() => setPage(page + 1)}
+      className={`px-3 py-1 border rounded ${
+        page === pages
+          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+          : "hover:bg-black hover:text-white"
+      }`}
+    >
+      Next
+    </button>
+  </div>
+)}
       {/* ================= RETURN REQUESTS ================= */}
 
       {selectedOrder && (

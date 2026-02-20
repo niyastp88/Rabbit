@@ -4,21 +4,21 @@ import axios from "axios";
 // Fetch all orders (admin only)
 export const fetchAllOrders = createAsyncThunk(
   "adminOrders/fetchAllOrders",
-  async (_, { rejectWithValue }) => {
+  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/admin/orders`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/admin/orders?page=${page}&limit=${limit}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("userToken")}`,
           },
-        },
+        }
       );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
-  },
+  }
 );
 
 // Update order delivery status (Admin only)
@@ -69,6 +69,7 @@ const adminOrderSlice = createSlice({
     orders: [],
     totalOrders: 0,
     totalSales: [],
+    pages:1,
     loading: false,
     error: null,
   },
@@ -81,14 +82,12 @@ const adminOrderSlice = createSlice({
       })
       .addCase(fetchAllOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload;
-        state.totalOrders = action.payload.length;
+  state.orders = action.payload.orders;
+  state.totalOrders = action.payload.totalOrders;
+  state.pages = action.payload.pages;
+  state.totalSales = action.payload.totalRevenue;
 
-        // calculate total sales
-        const totalSales = action.payload.reduce((acc, order) => {
-          return acc + order.totalPrice;
-        }, 0);
-        state.totalSales = totalSales;
+        
       })
       .addCase(fetchAllOrders.rejected, (state, action) => {
         state.loading = false;

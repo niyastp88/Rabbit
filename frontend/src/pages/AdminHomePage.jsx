@@ -24,7 +24,7 @@ const AdminHomePage = () => {
 
   useEffect(() => {
     dispatch(fetchAdminProducts({ page: 1, limit: 10 }));
-    dispatch(fetchAllOrders());
+    dispatch(fetchAllOrders({ page:1, limit:10 }));
   }, [dispatch]);
 
   return (

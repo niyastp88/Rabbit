@@ -79,14 +79,14 @@ const MyOrdersPage = () => {
                 </td>
                 <td className="py-2 px-2 sm:py-4 sm:px-4">
                   {order.shippingAddress
-                    ? `${order.shippingAddress.city},${order.shippingAddress.country}`
+                    ? `${order.shippingAddress.address},${order.shippingAddress.city}`
                     : "N/A"}
                 </td>
                 <td className="py-2 px-2 sm:py-4 sm:px-4">
                   {order.orderItems.length}
                 </td>
                 <td className="py-2 px-2 sm:py-4 sm:px-4">
-                  ${order.totalPrice}
+                  ₹ {order.totalPrice}
                 </td>
                 <td className="py-2 px-2 sm:py-4 sm:px-4">
                   <span

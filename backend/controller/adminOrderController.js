@@ -3,8 +3,35 @@ const Order = require("../models/Order");
 // Get all orders (Admin only)
 exports.getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find({}).populate("user", "name email");
-    res.status(200).json(orders);
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const totalOrders = await Order.countDocuments();
+
+    const orders = await Order.find({})
+      .populate("user", "name email")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+      const totalSalesData = await Order.aggregate([
+  {
+    $group: {
+      _id: null,
+      totalRevenue: { $sum: "$totalPrice" }
+    }
+  }
+]);
+
+const totalRevenue = totalSalesData[0]?.totalRevenue || 0;
+
+    res.status(200).json({
+      orders,
+      page,
+      pages: Math.ceil(totalOrders / limit),
+      totalOrders,
+      totalRevenue
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
