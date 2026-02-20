@@ -36,17 +36,17 @@ const OrderManagement = lazy(
 const ProtectedRoute = lazy(() => import("./components/Common/ProtectedRoute"));
 const AddProductPage = lazy(() => import("./components/Admin/AddProductPage"));
 const CategoryManagement = lazy(
-  () => import("./components/Admin/categoryManagement"),
+  () => import("./components/Admin/CategoryManagement"),
 );
 const PaymentFailedPage = lazy(() => import("./pages/PaymentFailedPage"));
-const BrandManagement = lazy(() => import("./components/Admin/brandManagemnt"));
+const BrandManagement = lazy(() => import("./components/Admin/BrandManagemnt"));
 const MaterialManagement = lazy(
-  () => import("./components/Admin/materialManagement"),
+  () => import("./components/Admin/MaterialManagement"),
 );
 const HomeContentManagement = lazy(
   () => import("./components/Admin/HomeContentManagment"),
 );
-const ForgotPassword = lazy(() => import("./pages/forgotPassword"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 const App = () => {
