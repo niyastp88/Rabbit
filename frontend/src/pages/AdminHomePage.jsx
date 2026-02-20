@@ -102,7 +102,7 @@ const AdminHomePage = () => {
                 orders.slice(0, 5).map((order) => (
                   <tr key={order._id} className="border-b">
                     <td className="p-4">{order._id}</td>
-                    <td className="p-4">{order.user?.name}</td>
+                    <td className="p-4">{order.shippingAddress.firstname}</td>
                     <td className="p-4">₹ {order.totalPrice}</td>
                     <td className="p-4">{order.status}</td>
                   </tr>

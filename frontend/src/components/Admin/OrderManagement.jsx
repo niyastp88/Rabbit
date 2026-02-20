@@ -100,7 +100,7 @@ const limit = 10;
                 <td className="py-4 px-4 font-medium text-gray-900 whitespace-nowrap">
                   #{order._id}
                 </td>
-                <td className="p-4">{order.user.name}</td>
+                <td className="p-4">{order.shippingAddress.firstname}</td>
                 <td className="p-4">₹ {order.totalPrice.toFixed(2)}</td>
                 <td className="px-4">
                   <select
